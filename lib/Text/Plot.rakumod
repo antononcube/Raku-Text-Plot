@@ -1,7 +1,5 @@
 use v6.d;
 
-use Stats;
-
 unit module Text::Plot;
 
 
