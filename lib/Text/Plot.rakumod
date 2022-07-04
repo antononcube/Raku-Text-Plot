@@ -298,8 +298,8 @@ multi text-list-plot($x is copy,
 
     if $title ~~ Str {
         my @labelLine = ' ' xx $width;
-        for ^$title.chars -> $i {
-            @labelLine[$width / 2 - $xLabel.chars / 2 + $i] = $title.comb[$i]
+        for ^($title.Str.chars) -> $i {
+            @labelLine[$width / 2 - $title.chars / 2 + $i] = $title.comb[$i]
         }
         @res.unshift($(@labelLine));
     }
