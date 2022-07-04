@@ -8,17 +8,15 @@ Here is the list of functions:
 - [ ] `text-plot`
 - [ ] `text-bar-chart`
 
-**Currently only `text-plot` is implemented.**
+***Currently only `text-list-plot` is implemented.***
 
 It would be nice to also have the functions:
 
 - [ ] `text-density-plot`
 - [ ] `text-box-plot`
 
-But that would require dependency on certain statistical package.
-(I think it is best if this package is kept simple.)
-
-(The list above is inspired by the R-package "txtplot", [BB1].)
+But that would require dependency on a certain statistical package.
+(I think it is best to keep this package simple.)
 
 -------
 
@@ -134,12 +132,19 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 
 ## Implementation notes
 
-The axes ticks are computed with a version if R-function 
-[`pretty`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/pretty.html).
+- The package functions and their signatures design are easy to come up with, but
+  it is very helpful to have a "good example" to follow. 
 
-The points and ticks are rescaled with a version of Mathematica-function 
-[`Rescale`](https://reference.wolfram.com/language/ref/Rescale.html).
+  - I consider the R-package "txtplot", [BB1], to be such good example. 
+    
+  - There at least three Python packages for text plots, 
+    but only tried them out once. None was as complete and "nice" as the R-package "txtplot". 
 
+- The points and ticks are rescaled with a version of the Mathematica-function
+  [`Rescale`](https://reference.wolfram.com/language/ref/Rescale.html).
+
+- The axes ticks are computed with a version of the R-function 
+  [`pretty`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/pretty.html).
 
 -------
 
@@ -161,7 +166,9 @@ The points and ticks are rescaled with a version of Mathematica-function
 
    - Easy to implement inlined with `text-plot`, but it might give a simpler interface.
    
-- [ ] `text-bar-chart`    
+- [ ] `text-bar-chart`  
+
+- [ ] CLI design and implementation
     
 
 -------
