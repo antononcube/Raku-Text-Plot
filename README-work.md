@@ -47,11 +47,11 @@ use Text::Plot;
 say text-list-plot((^30)>>.sqrt);
 ```
 
-Plot using both x- and y-values, and with specified axes labels and plot width and height:
+Plot using both x- and y-values, and with specified axes labels, plot width, height, and title:
 
 ```perl6
 my @xs = (0, 0.1 ... 5);
-say text-list-plot(@xs,  @xs>>.sin, xLabel => 'some range', yLabel => 'value', width => 100, height => 30, title => 'SINE PLOT');
+say text-list-plot(@xs,  @xs>>.sin, xLabel => 'x-points', yLabel => 'value', width => 100, height => 30, title => 'SINE PLOT');
 ```
 
 Smallish plot with custom point character spec:

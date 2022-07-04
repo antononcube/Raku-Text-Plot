@@ -65,14 +65,14 @@ say text-list-plot((^30)>>.sqrt);
 #  0.00      5.00      10.00    15.00     20.00     25.00
 ```
 
-Plot using both x- and y-values, and with specified axes labels and plot width and height:
+Plot using both x- and y-values, and with specified axes labels, plot width, height, and title:
 
 ```perl6
 my @xs = (0, 0.1 ... 5);
-say text-list-plot(@xs,  @xs>>.sin, xLabel => 'some range', yLabel => 'value', width => 100, height => 30, title => 'SINE PLOT');
+say text-list-plot(@xs,  @xs>>.sin, xLabel => 'x-points', yLabel => 'value', width => 100, height => 30, title => 'SINE PLOT');
 ```
 ```
-# SINE PLOT                                              
+# SINE PLOT                                             
 # ++------------------+-------------------+------------------+-------------------+------------------++        
 # +                         * * * * * *                                                              +  1.00  
 # |                     * *             * *                                                          |        
@@ -104,7 +104,7 @@ say text-list-plot(@xs,  @xs>>.sin, xLabel => 'some range', yLabel => 'value', w
 # +                                                                                       * * * * *  + -1.00  
 # ++------------------+-------------------+------------------+-------------------+------------------++        
 #  0.00               1.00                2.00               3.00                4.00               5.00    
-#                                              some range
+#                                               x-points
 ```
 
 Smallish plot with custom point character spec:
