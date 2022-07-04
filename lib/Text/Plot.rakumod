@@ -136,7 +136,7 @@ multi text-list-plot($x is copy,
                      :$width is copy = 60,
                      :$height is copy = Whatever,
                      :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
-                     :$xlim is copy = Whatever, :$ylim is copy = Whatever,
+                     :$xLimit is copy = Whatever, :$yLimit is copy = Whatever,
                      :$title = Whatever) {
 
     if !is-positional-of-numerics($x) {
@@ -163,17 +163,23 @@ multi text-list-plot($x is copy,
     # TBD...
 
     my @xrange;
-    if $xlim.isa(Whatever) {
-        @xrange = get-range($x)
-    } else {
-        # TBD...
+    given $xLimit {
+        when $_.isa(Whatever) { @xrange = get-range($x) }
+        when $_ ~~ Numeric { @xrange = (0, $xLimit).sort.List; }
+        when $_ ~~ Positional && $_.elems == 2 { @xrange = [|$_.sort] }
+        default {
+            die 'The value of the xLimit is expected a number, a list of two numbers, or Whatever.';
+        }
     }
 
     my @yrange;
-    if $ylim.isa(Whatever) {
-        @yrange = get-range($y)
-    } else {
-        # TBD...
+    given $yLimit {
+        when $_.isa(Whatever) { @yrange = get-range($y) }
+        when $_ ~~ Numeric { @yrange = (0, $yLimit).sort.List; }
+        when $_ ~~ Positional && $_.elems == 2 { @yrange = [|$_.sort] }
+        default {
+            die 'The value of the yLimit is expected a number, a list of two numbers, or Whatever.';
+        }
     }
 
     #------------------------------------------------------
@@ -212,7 +218,7 @@ multi text-list-plot($x is copy,
     # Place tick marks
     #------------------------------------------------------
 
-    my @xticksMarks = rescale(@xticks, (min(|$x), max(|$x)), (1, $width - 2))>>.round;
+    my @xticksMarks = rescale(@xticks, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
     my %xticksMarks = @xticks>>.fmt('%6.2f') Z=> @xticksMarks;
     @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
     %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
@@ -228,7 +234,7 @@ multi text-list-plot($x is copy,
     }
     @res.append($(@tickTextLine));
 
-    my @yticksMarks = rescale(@yticks, (min(|$y), max(|$y)), ($height - 2, 1))>>.round;
+    my @yticksMarks = rescale(@yticks, (@yrange[0], @yrange[1]), ($height - 2, 1))>>.round;
     my %yticksMarks = @yticks>>.fmt('%6.2f') Z=> @yticksMarks;
     @yticksMarks = @yticksMarks.grep({ 1 ≤ $_ ≤ $height - 2 }).List;
     %yticksMarks = %yticksMarks.grep({ 1 ≤ $_.value ≤ $height - 2 }).List;
@@ -247,8 +253,8 @@ multi text-list-plot($x is copy,
     # Plot points
     #------------------------------------------------------
 
-    my @xplt = rescale($x, (min(|$x), max(|$x)), (1, $width - 2))>>.round;
-    my @yplt = rescale($y, (min(|$y), max(|$y)), ($height - 2, 1))>>.round;
+    my @xplt = rescale($x, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
+    my @yplt = rescale($y, (@yrange[0], @yrange[1]), ($height - 2, 1))>>.round;
 
     for ^@xplt.elems -> $i {
         @res[@yplt[$i]][@xplt[$i]] = $point-char
