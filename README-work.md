@@ -59,6 +59,12 @@ my @xs = (0, 0.05 ... 10);
 say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some range', yLabel => 'sqrt', width => 40, height => 12);
 ```
 
+Plot a list of two-element lists:
+
+```perl6
+text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
+```
+
 -------
 
 ## Implementation notes
@@ -81,7 +87,7 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 
 ## TODO
 
-- [ ] Plotting a list of two-element lists.
+- [X] Plotting a list of two-element lists.
 
 - [ ] Make the axes ticks to be on the left.
 
