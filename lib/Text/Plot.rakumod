@@ -11,14 +11,15 @@ sub is-positional-of-numerics($obj) {
 }
 
 #===========================================================
-sub get-range($x, $frac = 0.05) {
-    my $ux = unique($x);
+sub get-range(@x, $frac = 0.05) {
+    my @ux = unique(@x).List;
     my @range;
-    if $ux.elems == 1 {
-        @range = $ux[0] ?? (-1, 1) !! ($ux X+ (-0.4, 0.4)) X* abs($ux);
+    if @ux.elems == 1 {
+        @range = @ux[0] ?? (-1, 1) !! (@ux X+ (-0.4, 0.4)) X* abs(@ux);
     } else {
-        @range = (min($x), max($x));
-        @range = (min($x), max($x)) Z+ (($frac * (@range[1] - @range[0])) X* (-1, 1));
+        @range = (min(@x), max(@x));
+        @range[0] = @range[0] - $frac * (@range[1] - @range[0]);
+        @range[1] = @range[1] + $frac * (@range[1] - @range[0]);
     }
     return @range;
 }
@@ -50,9 +51,6 @@ sub pretty(@range where *.elems == 2, UInt $n) {
         $base_toFixed = abs(round(log10($base)));
     }
 
-    say "base : $base";
-    say "base_toFixed : $base_toFixed";
-
     ## unit : from { 1,2,5,10 } * base
     ##	 such that |u - cell| is small,
     ## favoring larger (if h > 1, else smaller)  u  values;
@@ -75,23 +73,16 @@ sub pretty(@range where *.elems == 2, UInt $n) {
     ##
     ## ===>	2/5 *(2+h)/(1+h)  <=  c/u  <=  (2+h)/(1+h)
 
-    say "unit : $unit";
-    my @ticks = [];
+    my @ticks;
     my $i = 0;
-    if @range[0] > $unit {
-        $i = floor(@range[0] / $unit) * $unit;
-        #$i = round($i, 10 ** ($base_toFixed-1));
-        $i = round($i, $unit);
-    }
+    #if @range[0] > $unit {
+    $i = floor(@range[0] / $unit) * $unit;
+    $i = round($i, $unit);
+    #}
     while $i < @range[1] {
         @ticks.push($i);
         $i += $unit;
-        #say "before: $i";
-        if $base_toFixed > 0 {
-            #$i = round($i, 10 ** ($base_toFixed-1));
-            $i = round($i, $unit);
-        }
-        #say "after: $i"
+        $i = round($i, $unit);
     }
     @ticks.push($i);
 
@@ -100,13 +91,13 @@ sub pretty(@range where *.elems == 2, UInt $n) {
 
 #===========================================================
 sub get-ticks(@range) {
-    #return @range[0], (@range[1] - @range[0]) / 5 ... @range[1];
+    #return (@range[0], @range[0] + (@range[1] - @range[0]) / 5 ... @range[1]).List;
     return pretty(@range, 5);
 }
 
 #===========================================================
 multi rescale(@x) {
-    return rescale(@x, (min(@x), max(@x)), (0,1));
+    return rescale(@x, (min(@x), max(@x)), (0, 1));
 }
 multi rescale(@x, @vrng where @vrng.elems == 2) {
     return rescale(@x, @vrng, (0, 1));
@@ -125,8 +116,8 @@ multi rescale(@x,
               Numeric $vmax) {
 
     if $max != $min {
-       my @res = (@x X- $min) X/ ($max - $min);
-       return (@res X* ($vmax - $vmin)) X+ $vmin;
+        my @res = (@x X- $min) X/ ($max - $min);
+        return (@res X* ($vmax - $vmin)) X+ $vmin;
     }
 
     return @x X- $min;
@@ -140,7 +131,7 @@ multi text-plot($x is copy,
                 Str :$pch = "*",
                 :$width is copy = 60,
                 :$height is copy = Whatever,
-                :$xlab is copy = Whatever, :$ylab is copy = Whatever,
+                :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
                 :$xlim is copy = Whatever, :$ylim is copy = Whatever) {
 
     if !is-positional-of-numerics($x) {
@@ -182,64 +173,103 @@ multi text-plot($x is copy,
     }
 
     #------------------------------------------------------
-    # Get tick marks
-    #------------------------------------------------------
-    my @xticks = get-ticks(@xrange);
-    my @yticks = get-ticks(@yrange);
-
-    my @xtkch = @xticks.map({ $_.fmt('%05.2f') });
-    my @ytkch = @yticks.map({ $_.fmt('%05.2f') });
-
-    my $xdelta = @xrange[1] - @xrange[0];
-    my $ydelta = @yrange[1] - @yrange[0];
-
-    #------------------------------------------------------
-    # Plot area
-    #------------------------------------------------------
-    ## calculate plot margins and size of plotting area
-    ## space needed for ytick marks +2 for prettyness (+ space for ylab)
-    my $woffset = 5;
-
-    my $hoffset = 3;
-
-    #------------------------------------------------------
     # Initialize plot array
-    #my @res = ' ' xx ($width + 1) * $height;
+    #------------------------------------------------------
     my @res = (' ' xx $width * $height).rotor($width)>>.Array.Array;
-
 
     #------------------------------------------------------
     # Create axes
     #------------------------------------------------------
 
     # Top
-    for ^$width -> $i { @res[0][$i] = '-'}
+    for ^$width -> $i { @res[0][$i] = '-' }
 
     # Bottom
-    for ^$width -> $i { @res[$height-1][$i] = '-'}
+    for ^$width -> $i { @res[$height - 1][$i] = '-' }
 
     # Left
-    for ^$height -> $i { @res[$i][0] = '|'}
+    for ^$height -> $i { @res[$i][0] = '|' }
 
     # Right
-    for ^$height -> $i { @res[$i][$width-1] = '|'}
+    for ^$height -> $i { @res[$i][$width - 1] = '|' }
+
+    @res[0][0] = '+';
+    @res[0][$width - 1] = '+';
+    @res[$height - 1][0] = '+';
+    @res[$height - 1][$width - 1] = '+';
+
+    #------------------------------------------------------
+    # Get tick marks
+    #------------------------------------------------------
+    my @xticks = get-ticks(@xrange);
+    my @yticks = get-ticks(@yrange);
 
     #------------------------------------------------------
     # Place tick marks
     #------------------------------------------------------
 
+    my @xticksMarks = rescale(@xticks, (min(|$x), max(|$x)), (1, $width - 2))>>.round;
+    my %xticksMarks = @xticks>>.fmt('%6.2f') Z=> @xticksMarks;
+    @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
+    %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
 
+    for @xticksMarks -> $i { @res[0][$i] = '+' }
+    for @xticksMarks -> $i { @res[$height - 1][$i] = '+' }
+    my @tickTextLine = ' ' xx $width;
+    for %xticksMarks.kv -> $k, $v {
+        my $t = $k.trim;
+        for ^($t.chars) -> $i {
+            @tickTextLine[$v + $i] = $t.comb[$i]
+        }
+    }
+    @res.append($(@tickTextLine));
 
+    my @yticksMarks = rescale(@yticks, (min(|$y), max(|$y)), ($height - 2, 1))>>.round;
+    my %yticksMarks = @yticks>>.fmt('%6.2f') Z=> @yticksMarks;
+    @yticksMarks = @yticksMarks.grep({ 1 ≤ $_ ≤ $height - 2 }).List;
+    %yticksMarks = %yticksMarks.grep({ 1 ≤ $_.value ≤ $height - 2 }).List;
+
+    for @yticksMarks -> $i { @res[$i][0] = '+' }
+    for @yticksMarks -> $i { @res[$i][$width - 1] = '+' }
+    for %yticksMarks.kv -> $k, $v { @res[$v].append($k.comb) }
+
+    # Pad for max - y-ticks
+    my $maxResLine = max(@res>>.elems);
+    for ^@res.elems -> $i {
+        @res[$i].append((' ' xx ($maxResLine - @res[$i].elems)))
+    }
 
     #------------------------------------------------------
     # Plot points
     #------------------------------------------------------
 
-    my @xplt = rescale($x, (min(|$x), max(|$x)), ($woffset, $width-2))>>.round;
-    my @yplt = rescale($y, (min(|$y), max(|$y)), ($height-2, $hoffset))>>.round;
+    my @xplt = rescale($x, (min(|$x), max(|$x)), (1, $width - 2))>>.round;
+    my @yplt = rescale($y, (min(|$y), max(|$y)), ($height - 2, 1))>>.round;
 
     for ^@xplt.elems -> $i {
         @res[@yplt[$i]][@xplt[$i]] = $pch
+    }
+
+    #------------------------------------------------------
+    # Place labels
+    #------------------------------------------------------
+
+    if $xLabel ~~ Str {
+        my @labelLine = ' ' xx $width;
+        for ^$xLabel.chars -> $i {
+            @labelLine[$width / 2 - $xLabel.chars / 2 + $i] = $xLabel.comb[$i]
+        }
+        @res.append($(@labelLine));
+    }
+
+    if $yLabel ~~ Str {
+        my @labelLine = ' ' xx $height;
+        for ^$yLabel.chars -> $i {
+            @labelLine[$height / 2 - $yLabel.chars / 2 + $i] = $yLabel.comb[$i]
+        }
+        for ^@labelLine.elems -> $i {
+            @res[$i].append(' ').append(@labelLine[$i]);
+        }
     }
 
     return @res>>.join.join("\n");
