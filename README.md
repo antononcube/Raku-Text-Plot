@@ -34,7 +34,7 @@ zef install https://github.com/antononcube/Raku-Text-Plot.git
 
 ## Usage examples
  
-Simple plot with y-values only
+Simple plot with y-values only:
 
 ```perl6
 use Text::Plot;
@@ -104,27 +104,23 @@ Smallish plot:
 
 ```perl6
 my @xs = (0, 0.4 ... 10);
-say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 50, height => 16);
+say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 40, height => 12);
 ```
 ```
-# ++--------+---------+--------+---------+--------++        
-# +*                                               +  0.00  
-# |                                                |        
-# +                                                + -0.50 s
-# |  *                                             |       q
-# +    *                                           + -1.00 r
-# |      * *                                       |       t
-# +         * *                                    + -1.50  
-# |             * *                                |       v
-# +                 * *                            + -2.00 a
-# |                     * **                       |       l
-# +                          * * *                 + -2.50 u
-# |                                * * *           |       e
-# +                                      ** * *    + -3.00  
-# |                                             * *|        
-# ++--------+---------+--------+---------+--------++        
-#  0.00     2.00      4.00     6.00      8.00     10.00   
-#                     some range
+# ++------+-------+------+-------+------++        
+# +*                                     +  0.00 s
+# +                                      + -0.50 q
+# | *                                    |       r
+# +   **                                 + -1.00 t
+# +      ** *                            + -1.50  
+# |          * **                        |       v
+# +               ** **                  + -2.00 a
+# +                     ** **            + -2.50 l
+# |                           ** ** *    |       u
+# +                                  * **+ -3.00 e
+# ++------+-------+------+-------+------++        
+#  0.00   2.00    4.00   6.00    8.00   10.00   
+#                some range
 ```
 
 -------

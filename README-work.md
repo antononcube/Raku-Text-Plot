@@ -34,7 +34,7 @@ zef install https://github.com/antononcube/Raku-Text-Plot.git
 
 ## Usage examples
  
-Simple plot with y-values only
+Simple plot with y-values only:
 
 ```perl6
 use Text::Plot;
@@ -52,7 +52,7 @@ Smallish plot:
 
 ```perl6
 my @xs = (0, 0.4 ... 10);
-say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 50, height => 16);
+say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 40, height => 12);
 ```
 
 -------
