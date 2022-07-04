@@ -132,11 +132,12 @@ multi text-list-plot($x, *%args) {
 
 multi text-list-plot($x is copy,
                      $y is copy,
-                     Str :$pch = "*",
+                     Str :$point-char = "*",
                      :$width is copy = 60,
                      :$height is copy = Whatever,
                      :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
-                     :$xlim is copy = Whatever, :$ylim is copy = Whatever) {
+                     :$xlim is copy = Whatever, :$ylim is copy = Whatever,
+                     :$title = Whatever) {
 
     if !is-positional-of-numerics($x) {
         die "The first argument is expected to be a Positional with Numeric objects."
@@ -250,7 +251,7 @@ multi text-list-plot($x is copy,
     my @yplt = rescale($y, (min(|$y), max(|$y)), ($height - 2, 1))>>.round;
 
     for ^@xplt.elems -> $i {
-        @res[@yplt[$i]][@xplt[$i]] = $pch
+        @res[@yplt[$i]][@xplt[$i]] = $point-char
     }
 
     #------------------------------------------------------
@@ -275,5 +276,18 @@ multi text-list-plot($x is copy,
         }
     }
 
+    #------------------------------------------------------
+    # Place title
+    #------------------------------------------------------
+
+    if $title ~~ Str {
+        my @labelLine = ' ' xx $width;
+        for ^$title.chars -> $i {
+            @labelLine[$width / 2 - $xLabel.chars / 2 + $i] = $title.comb[$i]
+        }
+        @res.unshift($(@labelLine));
+    }
+
+    #------------------------------------------------------
     return @res>>.join.join("\n");
 }
