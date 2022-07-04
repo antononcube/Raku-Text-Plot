@@ -131,10 +131,10 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 Plot a list of two-element lists:
 
 ```perl6
-text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
+say text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
 ```
 ```
-# (                     some list of lists                     
+# some list of lists                     
 # +---+---------+---------+----------+---------+---------+---+      
 # |                                                          |      
 # +                                                  *****   +200.00
@@ -150,7 +150,7 @@ text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
 # +   *****                                                  +  0.00
 # |                                                          |      
 # +---+---------+---------+----------+---------+---------+---+      
-#     0.00      2.00      4.00       6.00      8.00      10.00      )
+#     0.00      2.00      4.00       6.00      8.00      10.00
 ```
 
 -------

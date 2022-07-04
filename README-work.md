@@ -62,7 +62,7 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 Plot a list of two-element lists:
 
 ```perl6
-text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
+say text-list-plot( (@xs Z ^@xs.elems).List, title => 'some list of lists'),
 ```
 
 -------
