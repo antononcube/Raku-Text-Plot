@@ -6,7 +6,7 @@ use lib './lib';
 
 use Text::Plot;
 
-plan 3;
+plan 5;
 
 ## 1
 isa-ok text-list-plot((^30).List>>.sqrt, width => 100, height => 30), Str, 'no y-values';
@@ -18,9 +18,23 @@ isa-ok text-list-plot(@xs, @xs>>.sin, width => 100, height => 30, xLabel => 'som
         'with x- and y-values and x-label specs';
 
 ## 3
-isa-ok text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List, width => 100, height => 30, xLabel => 'some range',
-        yLabel => 'sqrt value'),
+isa-ok
+        text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List,
+                width => 100, height => 30,
+                xLabel => 'some range', yLabel => 'sqrt value'),
         Str,
         'with x- and y-values and x- and y-label specs';
+
+
+## 4
+isa-ok text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List, title => 'some title'),
+        Str,
+        'with title';
+
+
+## 5
+isa-ok text-list-plot( (^@xs.elems Z @xs).List, title => 'some list of pairs'),
+        Str,
+        'list of two-element lists';
 
 done-testing;
