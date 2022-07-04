@@ -124,19 +124,19 @@ multi rescale(@x,
 }
 
 #===========================================================
-proto text-plot($x, |) is export {*}
+proto text-list-plot($x, |) is export {*}
 
-multi text-plot($x, *%args) {
-    return text-plot((^$x.elems).List, $x.List, |%args);
+multi text-list-plot($x, *%args) {
+    return text-list-plot((^$x.elems).List, $x.List, |%args);
 }
 
-multi text-plot($x is copy,
-                $y is copy,
-                Str :$pch = "*",
-                :$width is copy = 60,
-                :$height is copy = Whatever,
-                :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
-                :$xlim is copy = Whatever, :$ylim is copy = Whatever) {
+multi text-list-plot($x is copy,
+                     $y is copy,
+                     Str :$pch = "*",
+                     :$width is copy = 60,
+                     :$height is copy = Whatever,
+                     :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
+                     :$xlim is copy = Whatever, :$ylim is copy = Whatever) {
 
     if !is-positional-of-numerics($x) {
         die "The first argument is expected to be a Positional with Numeric objects."
