@@ -126,8 +126,12 @@ multi rescale(@x,
 #===========================================================
 proto text-plot($x, |) is export {*}
 
+multi text-plot($x, *%args) {
+    return text-plot((^$x.elems).List, $x.List, |%args);
+}
+
 multi text-plot($x is copy,
-                $y is copy = Whatever,
+                $y is copy,
                 Str :$pch = "*",
                 :$width is copy = 60,
                 :$height is copy = Whatever,
@@ -138,13 +142,12 @@ multi text-plot($x is copy,
         die "The first argument is expected to be a Positional with Numeric objects."
     }
 
-    if $y.isa(Whatever) {
-        $y = $x;
-        $x = (^$y.elems).List;
-    } else {
-        if !($y ~~ Positional && $y.elems == $x.elems) {
-            die "If both first and second arguments are given they are expected to be the positionals with same number of elements."
-        }
+    if !is-positional-of-numerics($y) {
+        die "The second argument is expected to be a Positional with Numeric objects."
+    }
+
+    if $y.elems != $x.elems {
+        die "If both first and second arguments are given they are expected to be the positionals with same number of elements."
     }
 
     if !($width ~~ Numeric || $height ~~ Numeric) {
