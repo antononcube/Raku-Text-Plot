@@ -124,6 +124,16 @@ multi rescale(@x,
 }
 
 #===========================================================
+#| Make a string that represents a list-plot of the given arguments.
+#| * C<$x> - Data points. If C<$y> is specified then C<$x> is interpreted as X-coordinates.
+#| * C<$y> - Y-coordinates.
+#| * C<$width> - Width of the plot.
+#| * C<$height> - Height of the plot.
+#| * C<$xLabel> - Label of the X-axis. If Whatever, then no label is placed.
+#| * C<$yLabel> - Label of the Y-axis. If Whatever, then no label is placed.
+#| * C<$xLimit> - Limits for the X-axis.
+#| * C<$yLimit> - Limits for the Y-axis.
+#| * C<$title> - Title of the plot.
 proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
