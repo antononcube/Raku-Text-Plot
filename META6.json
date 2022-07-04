@@ -1,0 +1,29 @@
+{
+  "name": "Text::Plot",
+  "description": "Text plots.",
+  "version": "0.0.1",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "zef:antononcube",
+  "depends": [
+    "Stats"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "Text::Plot": "lib/Text/Plot.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "text",
+    "textual",
+    "terminal",
+    "plot",
+    "chart"
+  ],
+  "api": "1",
+  "source-url": "https://github.com/antononcube/Raku-Text-Plot.git"
+}
