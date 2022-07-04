@@ -4,9 +4,9 @@ This repository has a Raku package for textual (terminal) plots.
 
 Here is the list of functions:
 
-- [X] `text-plot`
-- [ ] `text-density`
-- [ ] `text-curve`
+- [X] `text-list-plot`
+- [ ] `text-plot`
+- [ ] `text-density-plot`
 - [ ] `text-bar-chart`
 - [ ] `text-box-plot`
 
@@ -38,21 +38,21 @@ Simple plot with y-values only
 
 ```perl6
 use Text::Plot;
-say text-plot( (^30)>>.sqrt);
+say text-list-plot((^30)>>.sqrt);
 ```
 
 Plot using both x- and y-values, and with specified axes labels and plot width and height:
 
 ```perl6
 my @xs = (0, 0.1 ... 5);
-say text-plot( @xs,  @xs>>.sin, xLabel => 'some range', yLabel => 'sin value', width => 100, height => 30);
+say text-list-plot(@xs,  @xs>>.sin, xLabel => 'some range', yLabel => 'sin value', width => 100, height => 30);
 ```
 
 Smallish plot:
 
 ```perl6
 my @xs = (0, 0.4 ... 10);
-say text-plot( @xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 50, height => 16);
+say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, xLabel => 'some range', yLabel => 'sqrt value', width => 50, height => 16);
 ```
 
 -------
