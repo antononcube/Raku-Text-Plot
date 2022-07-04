@@ -81,6 +81,8 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 
 ## TODO
 
+- [ ] Plotting a list of two-element lists.
+
 - [ ] Make the axes ticks to be on the left.
 
    - It was just much easier to put them on the right.
@@ -101,6 +103,7 @@ say text-list-plot(@xs, -1 <<*>> @xs>>.sqrt, point-char => '·', xLabel => 'some
 
 - [ ] CLI design and implementation
     
+- [ ] Multi-lines plot support.
 
 -------
 
