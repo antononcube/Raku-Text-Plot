@@ -1,0 +1,26 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Text::Plot;
+
+plan 3;
+
+## 1
+isa-ok text-plot((^30).List>>.sqrt, width => 100, height => 30), Str, 'no y-values';
+
+## 2
+my @xs = (0, 0.4 ... 5).List;
+isa-ok text-plot(@xs, @xs>>.sin, width => 100, height => 30, xLabel => 'some range'),
+        Str,
+        'with x- and y-values and x-label specs';
+
+## 3
+isa-ok text-plot(@xs, @xs>>.sqrt.map({ -$_ }).List, width => 100, height => 30, xLabel => 'some range',
+        yLabel => 'sqrt value'),
+        Str,
+        'with x- and y-values and x- and y-label specs';
+
+done-testing;
