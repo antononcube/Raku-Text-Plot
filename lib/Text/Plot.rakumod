@@ -7,7 +7,7 @@ unit module Text::Plot;
 
 #===========================================================
 sub is-positional-of-numerics($obj) {
-    $obj ~~ Positional and ([and] $obj.map({ $_ ~~ Numeric }))
+    return ($obj ~~ Positional) && ([and] $obj.map({ $_ ~~ Numeric }));
 }
 
 #===========================================================
