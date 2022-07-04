@@ -10,6 +10,10 @@ sub is-positional-of-numerics($obj) {
     return ($obj ~~ Positional) && ([and] $obj.map({ $_ ~~ Numeric }));
 }
 
+sub is-positional-of-numeric-pairs($obj) {
+    return ($obj ~~ Positional) && ([and] $obj.map({ $_ ~~ Positional && $_.elems == 2 }));
+}
+
 #===========================================================
 sub get-range(@x, $frac = 0.05) {
     my @ux = unique(@x).List;
@@ -137,6 +141,9 @@ multi rescale(@x,
 proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
+    if is-positional-of-numeric-pairs($x) {
+        return text-list-plot($x.map(*[0]).List, $x.map(*[1]).List, |%args);
+    }
     return text-list-plot((^$x.elems).List, $x.List, |%args);
 }
 
@@ -150,7 +157,8 @@ multi text-list-plot($x is copy,
                      :$title = Whatever) {
 
     if !is-positional-of-numerics($x) {
-        die "The first argument is expected to be a Positional with Numeric objects."
+        die "The first argument is expected to be a Positional with Numeric objects" ~
+                " or a Positional with two-element Positional's of Numeric objects."
     }
 
     if !is-positional-of-numerics($y) {
