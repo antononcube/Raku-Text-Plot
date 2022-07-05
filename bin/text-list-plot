@@ -6,14 +6,29 @@ use Text::Plot;
 #| Makes textual (terminal) plots.
 multi sub MAIN(*@points is copy, #= Data points.
                Str :$point-char = '*', #= Plot points character.
-               UInt :$width = 60, #= Width of the plot.
-               UInt :$height = 16, #= Height of the plot.
+               Int :$width is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :$height is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :$title = '', #= Title of the plot.
                Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
                Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
                Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
                Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
                ) {
+
+    if $width < 0 {
+        my $proc = shell('echo $(tput cols)'):out;
+        my $captured-output = $proc.out.slurp: :close;
+        $width = ($captured-output).Int - 10
+    }
+    if $width < 0 || $width.isa(Inf) { $width = 60 }
+
+    if $height < 0 {
+        my $proc = shell('echo $(tput lines)'):out;
+        my $captured-output = $proc.out.slurp: :close;
+        $height = ($captured-output).Int - 5
+    }
+    if $height < 0 || $height.isa(Inf) { $height = ($width * 0.25).Int }
+
     my $res = text-list-plot(
             @points,
             :$point-char,
@@ -28,8 +43,8 @@ multi sub MAIN(*@points is copy, #= Data points.
 #| Makes textual (terminal) plots by splitting a string of data points.
 multi sub MAIN(Str $words, #= String with data points.
                Str :$point-char = '*', #= Plot points character.
-               UInt :$width = 60, #= Width of the plot.
-               UInt :$height = 16, #= Height of the plot.
+               Int :$width is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :$height is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :$title = '', #= Title of the plot.
                Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
                Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
@@ -40,7 +55,6 @@ multi sub MAIN(Str $words, #= String with data points.
     my @data;
     if $words.contains(',') {
         @data = $words.split(/\s/)>>.split(/','/)>>.Numeric;
-        say @data;
     } else {
         @data = $words.split(/\D/)>>.Numeric;
     }
@@ -57,8 +71,8 @@ multi sub MAIN(Str $words, #= String with data points.
 
 #| Makes textual (terminal) plots from pipeline input
 multi sub MAIN(Str :$point-char = '*', #= Plot points character.
-               UInt :$width = 60, #= Width of the plot.
-               UInt :$height = 16, #= Height of the plot.
+               Int :$width is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :$height is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :$title = '', #= Title of the plot.
                Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
                Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
