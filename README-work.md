@@ -165,7 +165,7 @@ the width and height. (The other example do succeed.)
 
     - I consider the R-package "txtplot", [BB1], to be such good example.
 
-    - There at least three Python packages for text plots, but only tried them out once. None was as complete and "nice"
+    - There are at least three Python packages for text plots, but only tried them out once. None was as complete and "nice"
       as the R-package "txtplot".
 
 - The points and ticks are rescaled with a version of the Mathematica-function
@@ -181,6 +181,8 @@ the width and height. (The other example do succeed.)
 - [X] Plotting a list of two-element lists.
 
 - [X] Optional tick labels format specs.
+
+- [X] CLI design and implementation.
 
 - [ ] Proper respect of width and height.
 
@@ -204,13 +206,16 @@ the width and height. (The other example do succeed.)
 
 - [ ] `text-bar-chart`
 
-- [ ] CLI design and implementation.
-
 - [ ] Multi-lines plot support.
 
 -------
 
 ## References
+
+[AAp0] Anton Antonov,
+[Text::Plot Raku package](https://github.com/antononcube/Raku-Text-Plot),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 [AAp1] Anton Antonov,
 [Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),

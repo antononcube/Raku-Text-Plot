@@ -164,12 +164,12 @@ records-summary(@dsRand);
 # +------------------------------+-------------------------------+
 # | y                            | x                             |
 # +------------------------------+-------------------------------+
-# | Min    => 6.655323849559302  | Min    => -0.5824948833219006 |
-# | 1st-Qu => 9.2855652832828    | 1st-Qu => 2.936820116225455   |
-# | Mean   => 11.50041343166031  | Mean   => 4.2482821760426885  |
-# | Median => 11.71635925778816  | Median => 4.476705439711388   |
-# | 3rd-Qu => 12.778234097878817 | 3rd-Qu => 5.646325354990057   |
-# | Max    => 19.60301822014039  | Max    => 8.50842216277962    |
+# | Min    => 2.8637346163679496 | Min    => -1.6641676425861496 |
+# | 1st-Qu => 8.994765655913078  | 1st-Qu => 2.2153769992626344  |
+# | Mean   => 11.201883023447362 | Mean   => 3.8525925161757066  |
+# | Median => 10.921146999787073 | Median => 3.9193215889325588  |
+# | 3rd-Qu => 13.466816629126996 | 3rd-Qu => 5.36079353535334    |
+# | Max    => 20.49209825060381  | Max    => 8.326717688491605   |
 # +------------------------------+-------------------------------+
 ```
 
@@ -183,16 +183,16 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 # ++---------+--------+---------+--------+---------+--------++       
 # +                                                          +  25.00
 # |                                                          |       
-# +                                                          +  20.00
-# |                                *                         |       
-# |               *       *       *              *   *       |       
-# +                        *  *   * **       *   *   *       +  15.00
-# |       *   * *   *  *  ** *  ******* ***  *               |       
-# +                    *  *  *  *     * * **                 +  10.00
-# |         *   *  *    *****  *  *  * **      **            |       
-# |                      *     *  **                         |       
-# +                                                          +   5.00
-# |                                                          |       
+# +                                    *                     +  20.00
+# |                                    *                     |       
+# |              *  *  *          *        *                 |       
+# +                  *     * *  * **       *     * *         +  15.00
+# |               * * * ** **  ** * ***                      |       
+# +             *  *  *  * *   *      ***  *  * *   *        +  10.00
+# |          *      * *  *  *  ***      *                    |       
+# |  *                 *            *     *        *         |       
+# +                *             *                           +   5.00
+# |                              *                           |       
 # +                                                          +   0.00
 # ++---------+--------+---------+--------+---------+--------++       
 #  -2.00     0.00     2.00      4.00     6.00      8.00     10.00
@@ -271,7 +271,7 @@ the width and height. (The other example do succeed.)
 
     - I consider the R-package "txtplot", [BB1], to be such good example.
 
-    - There at least three Python packages for text plots, but only tried them out once. None was as complete and "nice"
+    - There are at least three Python packages for text plots, but only tried them out once. None was as complete and "nice"
       as the R-package "txtplot".
 
 - The points and ticks are rescaled with a version of the Mathematica-function
@@ -287,6 +287,8 @@ the width and height. (The other example do succeed.)
 - [X] Plotting a list of two-element lists.
 
 - [X] Optional tick labels format specs.
+
+- [X] CLI design and implementation.
 
 - [ ] Proper respect of width and height.
 
@@ -310,13 +312,16 @@ the width and height. (The other example do succeed.)
 
 - [ ] `text-bar-chart`
 
-- [ ] CLI design and implementation.
-
 - [ ] Multi-lines plot support.
 
 -------
 
 ## References
+
+[AAp0] Anton Antonov,
+[Text::Plot Raku package](https://github.com/antononcube/Raku-Text-Plot),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 [AAp1] Anton Antonov,
 [Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),
