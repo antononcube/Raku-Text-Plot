@@ -1,0 +1,77 @@
+#!/usr/bin/env raku
+use v6.d;
+
+use Text::Plot;
+
+#| Makes textual (terminal) plots.
+multi sub MAIN(*@points is copy, #= Data points.
+               Str :$point-char = '*', #= Plot points character.
+               UInt :$width = 60, #= Width of the plot.
+               UInt :$height = 16, #= Height of the plot.
+               Str :$title = '', #= Title of the plot.
+               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
+               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               ) {
+    my $res = text-list-plot(
+            @points,
+            :$point-char,
+            :$width, :$height,
+            title => $title ?? $title !! Whatever,
+            :$xLabel, :$yLabel,
+            xTickLabelsFormat => $xTickLabelsFormat ?? $xTickLabelsFormat !! Whatever,
+            yTickLabelsFormat => $yTickLabelsFormat ?? $yTickLabelsFormat !! Whatever);
+    say $res;
+}
+
+#| Makes textual (terminal) plots by splitting a string of data points.
+multi sub MAIN(Str $words, #= String with data points.
+               Str :$point-char = '*', #= Plot points character.
+               UInt :$width = 60, #= Width of the plot.
+               UInt :$height = 16, #= Height of the plot.
+               Str :$title = '', #= Title of the plot.
+               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
+               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               ) {
+
+    my @data;
+    if $words.contains(',') {
+        @data = $words.split(/\s/)>>.split(/','/)>>.Numeric;
+        say @data;
+    } else {
+        @data = $words.split(/\D/)>>.Numeric;
+    }
+
+    MAIN(@data,
+            :$point-char,
+            :$width, :$height,
+            :$title,
+            :$xLabel, :$yLabel,
+            :$xTickLabelsFormat,
+            :$yTickLabelsFormat)
+
+}
+
+#| Makes textual (terminal) plots from pipeline input
+multi sub MAIN(Str :$point-char = '*', #= Plot points character.
+               UInt :$width = 60, #= Width of the plot.
+               UInt :$height = 16, #= Height of the plot.
+               Str :$title = '', #= Title of the plot.
+               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
+               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               ) {
+    my @words = lines.join(' ').words.Array;
+
+    MAIN(@words,
+            :$point-char,
+            :$width, :$height,
+            :$title,
+            :$xLabel, :$yLabel,
+            :$xTickLabelsFormat,
+            :$yTickLabelsFormat)
+}
