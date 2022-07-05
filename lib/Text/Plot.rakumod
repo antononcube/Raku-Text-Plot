@@ -129,13 +129,16 @@ multi rescale(@x,
 #| Make a string that represents a list-plot of the given arguments.
 #| * C<$x> - Data points. If C<$y> is specified then C<$x> is interpreted as X-coordinates.
 #| * C<$y> - Y-coordinates.
+#| * C<$point-char> - Plot points character.
 #| * C<$width> - Width of the plot.
 #| * C<$height> - Height of the plot.
+#| * C<$title> - Title of the plot.
 #| * C<$xLabel> - Label of the X-axis. If Whatever, then no label is placed.
 #| * C<$yLabel> - Label of the Y-axis. If Whatever, then no label is placed.
 #| * C<$xLimit> - Limits for the X-axis.
 #| * C<$yLimit> - Limits for the Y-axis.
-#| * C<$title> - Title of the plot.
+#| * C<$xTickLabelsFormat> - X-axis tick labels format.
+#| * C<$yTickLabelsFormat> - Y-axis tick labels format.
 proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
@@ -150,9 +153,11 @@ multi text-list-plot($x is copy,
                      Str :$point-char = "*",
                      :$width is copy = 60,
                      :$height is copy = Whatever,
-                     :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
+                     :$title = Whatever,
                      :$xLimit is copy = Whatever, :$yLimit is copy = Whatever,
-                     :$title = Whatever) {
+                     :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
+                     :$xTickLabelsFormat is copy = Whatever,
+                     :$yTickLabelsFormat is copy = Whatever) {
 
     if !is-positional-of-numerics($x) {
         die "The first argument is expected to be a Positional with Numeric objects" ~
@@ -235,7 +240,16 @@ multi text-list-plot($x is copy,
     #------------------------------------------------------
 
     my @xticksMarks = rescale(@xticks, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
-    my %xticksMarks = @xticks>>.fmt('%6.2f') Z=> @xticksMarks;
+
+    if $xTickLabelsFormat.isa(Whatever) {
+        my $b = ceiling(log10(max(@xticks>>.abs)));
+        $xTickLabelsFormat = "%{$b+5}.2f"
+    } elsif ! $xTickLabelsFormat ~~ Str {
+        die "The value of the argument xTickFormatLable is expected to be a string or Whatever."
+    }
+
+    my %xticksMarks = @xticks>>.fmt($xTickLabelsFormat) Z=> @xticksMarks;
+
     @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
     %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
 
@@ -251,7 +265,15 @@ multi text-list-plot($x is copy,
     @res.append($(@tickTextLine));
 
     my @yticksMarks = rescale(@yticks, (@yrange[0], @yrange[1]), ($height - 2, 1))>>.round;
-    my %yticksMarks = @yticks>>.fmt('%6.2f') Z=> @yticksMarks;
+
+    if $yTickLabelsFormat.isa(Whatever) {
+        my $b = ceiling(log10(max(@yticks>>.abs)));
+        $yTickLabelsFormat = "%{$b+5}.2f"
+    } elsif ! $yTickLabelsFormat ~~ Str {
+        die "The value of the argument yTickFormatLable is expected to be a string or Whatever."
+    }
+
+    my %yticksMarks = @yticks>>.fmt($yTickLabelsFormat) Z=> @yticksMarks;
     @yticksMarks = @yticksMarks.grep({ 1 ≤ $_ ≤ $height - 2 }).List;
     %yticksMarks = %yticksMarks.grep({ 1 ≤ $_.value ≤ $height - 2 }).List;
 
