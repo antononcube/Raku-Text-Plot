@@ -76,6 +76,55 @@ say text-list-plot((^@xs.elems Z @xs>>.cos).List, title => 'Some list of lists')
 
 -------
 
+## Command Line Interface (CLI)
+
+The package function `text-list-plot` can be used through the corresponding CLI:
+
+```shell
+> text-list-plot --help
+# Usage:
+#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] [<points> ...] -- Makes textual (terminal) plots.
+#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
+#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] -- Makes textual (terminal) plots from pipeline input
+#   
+#     [<points> ...]               Data points.
+#     --point-char=<Str>           Plot points character. [default: '*']
+#     --width[=UInt]               Width of the plot. [default: 60]
+#     --height[=UInt]              Height of the plot. [default: 16]
+#     --title=<Str>                Title of the plot. [default: '']
+#     --xLabel=<Str>               Label of the X-axis. If Whatever, then no label is placed. [default: '']
+#     --yLabel=<Str>               Label of the Y-axis. If Whatever, then no label is placed. [default: '']
+#     --xTickLabelsFormat=<Str>    X-axis tick labels format. [default: '']
+#     --yTickLabelsFormat=<Str>    Y-axis tick labels format. [default: '']
+#     <words>                      String with data points.
+```
+
+Here is an example pipeline:
+
+```shell
+> raku -e 'say (^1000).roll(21)' | text-list-plot
+# +---+------------+-----------+------------+------------+---+          
+# |                                                          |          
+# |     *                                                    |          
+# +                *                        *            *   +  800.00  
+# |                            *                    *        |          
+# |                     *                         *          |          
+# +                                                          +  600.00  
+# |                          *                               |          
+# |          *                       *                       |          
+# +                               *    *                     +  400.00  
+# |        *         *                                       |          
+# |                       *               *            *     |          
+# +   *         *                                            +  200.00  
+# |                                            *             |          
+# |                                                          |          
+# +---+------------+-----------+------------+------------+---+          
+#     0.00         5.00        10.00        15.00        20.00    
+```
+
+
+-------
+
 ## Implementation notes
 
 - The package functions and their signatures design are easy to come up with, but it is very helpful to have a "good
