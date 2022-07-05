@@ -158,14 +158,14 @@ The package function `text-list-plot` can be used through the corresponding CLI:
 ```shell
 > text-list-plot --help
 # Usage:
-#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] [<points> ...] -- Makes textual (terminal) plots.
-#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
-#   text-list-plot [--point-char=<Str>] [--width[=UInt]] [--height[=UInt]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] -- Makes textual (terminal) plots from pipeline input
+#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] [<points> ...] -- Makes textual (terminal) plots.
+#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
+#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] -- Makes textual (terminal) plots from pipeline input
 #   
 #     [<points> ...]               Data points.
 #     --point-char=<Str>           Plot points character. [default: '*']
-#     --width[=UInt]               Width of the plot. [default: 60]
-#     --height[=UInt]              Height of the plot. [default: 16]
+#     --width[=Int]                Width of the plot. (-1 for Whatever.) [default: -1]
+#     --height[=Int]               Height of the plot. (-1 for Whatever.) [default: -1]
 #     --title=<Str>                Title of the plot. [default: '']
 #     --xLabel=<Str>               Label of the X-axis. If Whatever, then no label is placed. [default: '']
 #     --yLabel=<Str>               Label of the Y-axis. If Whatever, then no label is placed. [default: '']
