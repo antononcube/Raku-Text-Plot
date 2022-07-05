@@ -65,9 +65,8 @@ multi sub MAIN(Str :$point-char = '*', #= Plot points character.
                Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
                Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
                ) {
-    my @words = lines.join(' ').words.Array;
-
-    MAIN(@words,
+    my $words = lines.join(' ');
+    MAIN($words,
             :$point-char,
             :$width, :$height,
             :$title,
