@@ -45,7 +45,8 @@ use Text::Plot;
 say text-list-plot((^30)>>.sqrt);
 ```
 
-Plot using both x- and y-values, and with specified axes labels, y-tick-labels format, and plot width, height, and title:
+Plot using both x- and y-values, and with specified axes labels, y-tick-labels format, and plot width, height, and
+title:
 
 ```perl6
 my @xs = (0, 0.2 ... 5);
@@ -74,6 +75,23 @@ Plot a list of two-element lists:
 say text-list-plot((^@xs.elems Z @xs>>.cos).List, title => 'Some list of lists'),
 ```
 
+Here is a more complicated example using a randomly generated dataset, [AAp1, App2]:
+
+```perl6
+use Data::Generators;
+use Data::Summarizers;
+my @dsRand = random-tabular-dataset(70, <x y>,
+        generators => [{ random-variate(NormalDistribution.new(4, 2), $_) },
+                       { random-variate(NormalDistribution.new(12, 3), $_) }]);
+records-summary(@dsRand);
+```
+
+```perl6
+text-list-plot(@dsRand.map({ $_<x y> })>>.List,
+        xLimit => (-2, 10), yLimit => (0, 25),
+        title => 'Random Normal distribution variates')
+```
+
 -------
 
 ## Command Line Interface (CLI)
@@ -99,6 +117,18 @@ The package function `text-list-plot` can be used through the corresponding CLI:
 #     <words>                      String with data points.
 ```
 
+Here is an example of a simple, y-axis values only call:
+
+```shell
+text-list-plot 33 12 21 10 3 4 
+```
+
+Here is an example of 2D points call:
+
+```shell
+text-list-plot "22,32 10,39 13,32 14,20"
+```
+
 Here is an example pipeline:
 
 ```shell
@@ -122,6 +152,9 @@ Here is an example pipeline:
 #     0.00         5.00        10.00        15.00        20.00    
 ```
 
+**Remark:** Attempt is made plot's width and height are determined automatically, using terminal's number of columns and
+lines. If that fails `width=60` is used. In the pipeline example above `text-list-plot` fails to automatically determine
+the width and height. (The other example do succeed.)
 
 -------
 
@@ -149,6 +182,10 @@ Here is an example pipeline:
 
 - [X] Optional tick labels format specs.
 
+- [ ] Proper respect of width and height.
+
+    - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
+
 - [ ] Make the axes ticks to be on the left.
 
     - It was just much easier to put them on the right.
@@ -167,13 +204,23 @@ Here is an example pipeline:
 
 - [ ] `text-bar-chart`
 
-- [ ] CLI design and implementation
+- [ ] CLI design and implementation.
 
 - [ ] Multi-lines plot support.
 
 -------
 
 ## References
+
+[AAp1] Anton Antonov,
+[Data::Generators Raku package](https://github.com/antononcube/Raku-Data-Generators),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
+
+[AAp2] Anton Antonov,
+[Data::Summarizers Raku package](https://github.com/antononcube/Raku-Data-Summarizers),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
 
 [BB1] Bjoern Bornkamp,
 [txtplot R package](https://github.com/bbnkmp/txtplot),
