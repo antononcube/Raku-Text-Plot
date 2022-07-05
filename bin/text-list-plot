@@ -20,14 +20,14 @@ multi sub MAIN(*@points is copy, #= Data points.
         my $captured-output = $proc.out.slurp: :close;
         $width = ($captured-output).Int - 10
     }
-    if $width < 0 || $width.isa(Inf) { $width = 60 }
+    if $width ≤ 0 || $width.isa(Inf) { $width = 60 }
 
     if $height < 0 {
         my $proc = shell('echo $(tput lines)'):out;
         my $captured-output = $proc.out.slurp: :close;
         $height = ($captured-output).Int - 5
     }
-    if $height < 0 || $height.isa(Inf) { $height = ($width * 0.25).Int }
+    if $height ≤ 0 || $height.isa(Inf) { $height = ($width * 0.25).Int }
 
     my $res = text-list-plot(
             @points,
