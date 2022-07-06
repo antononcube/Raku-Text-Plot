@@ -9,10 +9,10 @@ multi sub MAIN(*@points is copy, #= Data points.
                Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
                Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :t(:$title) = '', #= Title of the plot.
-               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
-               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
-               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
-               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
                ) {
 
     if $width < 0 {
@@ -34,9 +34,9 @@ multi sub MAIN(*@points is copy, #= Data points.
             :$point-char,
             :$width, :$height,
             title => $title ?? $title !! Whatever,
-            :$xLabel, :$yLabel,
-            xTickLabelsFormat => $xTickLabelsFormat ?? $xTickLabelsFormat !! Whatever,
-            yTickLabelsFormat => $yTickLabelsFormat ?? $yTickLabelsFormat !! Whatever);
+            :$x-label, :$y-label,
+            x-tick-labels-format => $x-tick-labels-format ?? $x-tick-labels-format !! Whatever,
+            y-tick-labels-format => $y-tick-labels-format ?? $y-tick-labels-format !! Whatever);
     say $res;
 }
 
@@ -46,10 +46,10 @@ multi sub MAIN(Str $words, #= String with data points.
                Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
                Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :t(:$title) = '', #= Title of the plot.
-               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
-               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
-               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
-               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
                ) {
 
     my @data;
@@ -63,9 +63,9 @@ multi sub MAIN(Str $words, #= String with data points.
             :$point-char,
             :$width, :$height,
             :$title,
-            :$xLabel, :$yLabel,
-            :$xTickLabelsFormat,
-            :$yTickLabelsFormat)
+            :$x-label, :$y-label,
+            :$x-tick-labels-format,
+            :$y-tick-labels-format)
 
 }
 
@@ -74,17 +74,17 @@ multi sub MAIN(Str :p(:$point-char) = '*', #= Plot points character.
                Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
                Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
                Str :t(:$title) = '', #= Title of the plot.
-               Str :$xLabel = '', #= Label of the X-axis. If Whatever, then no label is placed.
-               Str :$yLabel = '', #= Label of the Y-axis. If Whatever, then no label is placed.
-               Str :$xTickLabelsFormat = '', #= X-axis tick labels format.
-               Str :$yTickLabelsFormat = '', #= Y-axis tick labels format.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
                ) {
     my $words = lines.join(' ');
     MAIN($words,
             :$point-char,
             :$width, :$height,
             :$title,
-            :$xLabel, :$yLabel,
-            :$xTickLabelsFormat,
-            :$yTickLabelsFormat)
+            :$x-label, :$y-label,
+            :$x-tick-labels-format,
+            :$y-tick-labels-format)
 }
