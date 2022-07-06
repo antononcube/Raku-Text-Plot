@@ -133,12 +133,12 @@ multi rescale(@x,
 #| * C<$width> - Width of the plot.
 #| * C<$height> - Height of the plot.
 #| * C<$title> - Title of the plot.
-#| * C<$xLabel> - Label of the X-axis. If Whatever, then no label is placed.
-#| * C<$yLabel> - Label of the Y-axis. If Whatever, then no label is placed.
-#| * C<$xLimit> - Limits for the X-axis.
-#| * C<$yLimit> - Limits for the Y-axis.
-#| * C<$xTickLabelsFormat> - X-axis tick labels format.
-#| * C<$yTickLabelsFormat> - Y-axis tick labels format.
+#| * C<$x-label> - Label of the X-axis. If Whatever, then no label is placed.
+#| * C<$y-label> - Label of the Y-axis. If Whatever, then no label is placed.
+#| * C<$x-limit> - Limits for the X-axis.
+#| * C<$y-limit> - Limits for the Y-axis.
+#| * C<$x-tick-labels-format> - X-axis tick labels format.
+#| * C<$y-tick-labels-format> - Y-axis tick labels format.
 proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
@@ -150,14 +150,16 @@ multi text-list-plot($x, *%args) {
 
 multi text-list-plot($x is copy,
                      $y is copy,
-                     Str :$point-char = "*",
+                     Str :pointChar(:$point-char) = "*",
                      :$width is copy = 60,
                      :$height is copy = Whatever,
                      :$title = Whatever,
-                     :$xLimit is copy = Whatever, :$yLimit is copy = Whatever,
-                     :$xLabel is copy = Whatever, :$yLabel is copy = Whatever,
-                     :$xTickLabelsFormat is copy = Whatever,
-                     :$yTickLabelsFormat is copy = Whatever) {
+                     :xLimit(:$x-limit) is copy = Whatever,
+                     :yLimit(:$y-limit) is copy = Whatever,
+                     :xLabel(:$x-label) is copy = Whatever,
+                     :yLabel(:$y-label) is copy = Whatever,
+                     :xTickLabelsFormat(:$x-tick-labels-format) is copy = Whatever,
+                     :yTickLabelsFormat(:$y-tick-labels-format) is copy = Whatever) {
 
     if !is-positional-of-numerics($x) {
         die "The first argument is expected to be a Positional with Numeric objects" ~
@@ -184,9 +186,9 @@ multi text-list-plot($x is copy,
     # TBD...
 
     my @xrange;
-    given $xLimit {
+    given $x-limit {
         when $_.isa(Whatever) { @xrange = get-range($x) }
-        when $_ ~~ Numeric { @xrange = (0, $xLimit).sort.List; }
+        when $_ ~~ Numeric { @xrange = (0, $x-limit).sort.List; }
         when $_ ~~ Positional && $_.elems == 2 { @xrange = [|$_.sort] }
         default {
             die 'The value of the xLimit is expected a number, a list of two numbers, or Whatever.';
@@ -194,9 +196,9 @@ multi text-list-plot($x is copy,
     }
 
     my @yrange;
-    given $yLimit {
+    given $y-limit {
         when $_.isa(Whatever) { @yrange = get-range($y) }
-        when $_ ~~ Numeric { @yrange = (0, $yLimit).sort.List; }
+        when $_ ~~ Numeric { @yrange = (0, $y-limit).sort.List; }
         when $_ ~~ Positional && $_.elems == 2 { @yrange = [|$_.sort] }
         default {
             die 'The value of the yLimit is expected a number, a list of two numbers, or Whatever.';
@@ -241,14 +243,14 @@ multi text-list-plot($x is copy,
 
     my @xticksMarks = rescale(@xticks, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
 
-    if $xTickLabelsFormat.isa(Whatever) {
+    if $x-tick-labels-format.isa(Whatever) {
         my $b = ceiling(log10(max(@xticks>>.abs)));
-        $xTickLabelsFormat = "%{$b+5}.2f"
-    } elsif ! $xTickLabelsFormat ~~ Str {
+        $x-tick-labels-format = "%{$b+5}.2f"
+    } elsif ! $x-tick-labels-format ~~ Str {
         die "The value of the argument xTickFormatLable is expected to be a string or Whatever."
     }
 
-    my %xticksMarks = @xticks>>.fmt($xTickLabelsFormat) Z=> @xticksMarks;
+    my %xticksMarks = @xticks>>.fmt($x-tick-labels-format) Z=> @xticksMarks;
 
     @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
     %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
@@ -266,14 +268,14 @@ multi text-list-plot($x is copy,
 
     my @yticksMarks = rescale(@yticks, (@yrange[0], @yrange[1]), ($height - 2, 1))>>.round;
 
-    if $yTickLabelsFormat.isa(Whatever) {
+    if $y-tick-labels-format.isa(Whatever) {
         my $b = ceiling(log10(max(@yticks>>.abs)));
-        $yTickLabelsFormat = "%{$b+5}.2f"
-    } elsif ! $yTickLabelsFormat ~~ Str {
+        $y-tick-labels-format = "%{$b+5}.2f"
+    } elsif ! $y-tick-labels-format ~~ Str {
         die "The value of the argument yTickFormatLable is expected to be a string or Whatever."
     }
 
-    my %yticksMarks = @yticks>>.fmt($yTickLabelsFormat) Z=> @yticksMarks;
+    my %yticksMarks = @yticks>>.fmt($y-tick-labels-format) Z=> @yticksMarks;
     @yticksMarks = @yticksMarks.grep({ 1 ≤ $_ ≤ $height - 2 }).List;
     %yticksMarks = %yticksMarks.grep({ 1 ≤ $_.value ≤ $height - 2 }).List;
 
@@ -302,18 +304,18 @@ multi text-list-plot($x is copy,
     # Place labels
     #------------------------------------------------------
 
-    if $xLabel ~~ Str {
+    if $x-label ~~ Str {
         my @labelLine = ' ' xx $width;
-        for ^$xLabel.chars -> $i {
-            @labelLine[$width / 2 - $xLabel.chars / 2 + $i] = $xLabel.comb[$i]
+        for ^$x-label.chars -> $i {
+            @labelLine[$width / 2 - $x-label.chars / 2 + $i] = $x-label.comb[$i]
         }
         @res.append($(@labelLine));
     }
 
-    if $yLabel ~~ Str {
+    if $y-label ~~ Str {
         my @labelLine = ' ' xx $height;
-        for ^$yLabel.chars -> $i {
-            @labelLine[$height / 2 - $yLabel.chars / 2 + $i] = $yLabel.comb[$i]
+        for ^$y-label.chars -> $i {
+            @labelLine[$height / 2 - $y-label.chars / 2 + $i] = $y-label.comb[$i]
         }
         for ^@labelLine.elems -> $i {
             @res[$i].append(' ').append(@labelLine[$i]);
