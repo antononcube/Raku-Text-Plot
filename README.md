@@ -69,9 +69,9 @@ title:
 ```perl6
 my @xs = (0, 0.2 ... 5);
 say text-list-plot(@xs, @xs>>.sin,
-        xLabel => 'x-points',
-        yLabel => 'value',
-        yTickLabelsFormat => '%10.2e',
+        x-label => 'x-points',
+        y-label => 'value',
+        y-tick-labels-format => '%10.2e',
         width => 80,
         height => 18,
         title => 'SINE PLOT');
@@ -150,7 +150,7 @@ say text-list-plot((^@xs.elems Z @xs>>.cos).List, title => 'Some list of lists')
 #     0.00         50.00       100.00       150.00       200.00
 ```
 
-Here is a more complicated example using a randomly generated dataset, [AAp1, App2]:
+Here is a more complicated example using a randomly generated dataset, [AAp1, AAp2]:
 
 ```perl6
 use Data::Generators;
@@ -161,21 +161,21 @@ my @dsRand = random-tabular-dataset(70, <x y>,
 records-summary(@dsRand);
 ```
 ```
-# +------------------------------+-------------------------------+
-# | y                            | x                             |
-# +------------------------------+-------------------------------+
-# | Min    => 2.8637346163679496 | Min    => -1.6641676425861496 |
-# | 1st-Qu => 8.994765655913078  | 1st-Qu => 2.2153769992626344  |
-# | Mean   => 11.201883023447362 | Mean   => 3.8525925161757066  |
-# | Median => 10.921146999787073 | Median => 3.9193215889325588  |
-# | 3rd-Qu => 13.466816629126996 | 3rd-Qu => 5.36079353535334    |
-# | Max    => 20.49209825060381  | Max    => 8.326717688491605   |
-# +------------------------------+-------------------------------+
+# +------------------------------+------------------------------+
+# | y                            | x                            |
+# +------------------------------+------------------------------+
+# | Min    => 8.057252136104289  | Min    => 0.5177060612678073 |
+# | 1st-Qu => 10.354892624547558 | 1st-Qu => 2.222631712414722  |
+# | Mean   => 12.126854695771273 | Mean   => 3.925181682937902  |
+# | Median => 11.8318140484967   | Median => 3.7627668597052653 |
+# | 3rd-Qu => 14.108203235842492 | 3rd-Qu => 5.211415597782294  |
+# | Max    => 16.95126915162558  | Max    => 9.32933411299236   |
+# +------------------------------+------------------------------+
 ```
 
 ```perl6
 text-list-plot(@dsRand.map({ $_<x y> })>>.List,
-        xLimit => (-2, 10), yLimit => (0, 25),
+        x-limit => (-2, 10), y-limit => (0, 25),
         title => 'Random Normal distribution variates')
 ```
 ```
@@ -183,20 +183,23 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 # ++---------+--------+---------+--------+---------+--------++       
 # +                                                          +  25.00
 # |                                                          |       
-# +                                    *                     +  20.00
-# |                                    *                     |       
-# |              *  *  *          *        *                 |       
-# +                  *     * *  * **       *     * *         +  15.00
-# |               * * * ** **  ** * ***                      |       
-# +             *  *  *  * *   *      ***  *  * *   *        +  10.00
-# |          *      * *  *  *  ***      *                    |       
-# |  *                 *            *     *        *         |       
-# +                *             *                           +   5.00
-# |                              *                           |       
+# +                                                          +  20.00
+# |                                                          |       
+# |                  *       *   *    ***      *             |       
+# +            *    *   * * * * *  *   *  *              *   +  15.00
+# |              *  * **     ** ** **     * * *      *       |       
+# +               **** ***  * **    *       *       *        +  10.00
+# |            *    ** **           **        *              |       
+# |                                                          |       
+# +                                                          +   5.00
+# |                                                          |       
 # +                                                          +   0.00
 # ++---------+--------+---------+--------+---------+--------++       
 #  -2.00     0.00     2.00      4.00     6.00      8.00     10.00
 ```
+
+**Remark:** The function `text-list-plot` has camel case aliases for the multi-word named arguments.
+For example, `xLimit` for `x-limit` and `xTickLabelsFormat` for `x-tick-labels-format`.
 
 -------
 
@@ -207,20 +210,20 @@ The package function `text-list-plot` can be used through the corresponding CLI:
 ```shell
 > text-list-plot --help
 # Usage:
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] [<points> ...] -- Makes textual (terminal) plots.
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] -- Makes textual (terminal) plots from pipeline input
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] [<points> ...] -- Makes textual (terminal) plots.
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots from pipeline input
 #   
-#     [<points> ...]               Data points.
-#     --point-char=<Str>           Plot points character. [default: '*']
-#     --width[=Int]                Width of the plot. (-1 for Whatever.) [default: -1]
-#     --height[=Int]               Height of the plot. (-1 for Whatever.) [default: -1]
-#     --title=<Str>                Title of the plot. [default: '']
-#     --xLabel=<Str>               Label of the X-axis. If Whatever, then no label is placed. [default: '']
-#     --yLabel=<Str>               Label of the Y-axis. If Whatever, then no label is placed. [default: '']
-#     --xTickLabelsFormat=<Str>    X-axis tick labels format. [default: '']
-#     --yTickLabelsFormat=<Str>    Y-axis tick labels format. [default: '']
-#     <words>                      String with data points.
+#     [<points> ...]                                      Data points.
+#     -p|--point-char=<Str>                               Plot points character. [default: '*']
+#     -w|--width[=Int]                                    Width of the plot. (-1 for Whatever.) [default: -1]
+#     -h|--height[=Int]                                   Height of the plot. (-1 for Whatever.) [default: -1]
+#     -t|--title=<Str>                                    Title of the plot. [default: '']
+#     --xLabel|--x-label=<Str>                            Label of the X-axis. If Whatever, then no label is placed. [default: '']
+#     --yLabel|--y-label=<Str>                            Label of the Y-axis. If Whatever, then no label is placed. [default: '']
+#     --xTickLabelsFormat|--x-tick-labels-format=<Str>    X-axis tick labels format. [default: '']
+#     --yTickLabelsFormat|--y-tick-labels-format=<Str>    Y-axis tick labels format. [default: '']
+#     <words>                                             String with data points.
 ```
 
 Here is an example of a simple, y-axis values only call:
@@ -289,6 +292,8 @@ the width and height. (The other example do succeed.)
 - [X] Optional tick labels format specs.
 
 - [X] CLI design and implementation.
+
+- [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
 - [ ] Proper respect of width and height.
 

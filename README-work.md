@@ -51,9 +51,9 @@ title:
 ```perl6
 my @xs = (0, 0.2 ... 5);
 say text-list-plot(@xs, @xs>>.sin,
-        xLabel => 'x-points',
-        yLabel => 'value',
-        yTickLabelsFormat => '%10.2e',
+        x-label => 'x-points',
+        y-label => 'value',
+        y-tick-labels-format => '%10.2e',
         width => 80,
         height => 18,
         title => 'SINE PLOT');
@@ -75,7 +75,7 @@ Plot a list of two-element lists:
 say text-list-plot((^@xs.elems Z @xs>>.cos).List, title => 'Some list of lists'),
 ```
 
-Here is a more complicated example using a randomly generated dataset, [AAp1, App2]:
+Here is a more complicated example using a randomly generated dataset, [AAp1, AAp2]:
 
 ```perl6
 use Data::Generators;
@@ -88,9 +88,12 @@ records-summary(@dsRand);
 
 ```perl6
 text-list-plot(@dsRand.map({ $_<x y> })>>.List,
-        xLimit => (-2, 10), yLimit => (0, 25),
+        x-limit => (-2, 10), y-limit => (0, 25),
         title => 'Random Normal distribution variates')
 ```
+
+**Remark:** The function `text-list-plot` has camel case aliases for the multi-word named arguments.
+For example, `xLimit` for `x-limit` and `xTickLabelsFormat` for `x-tick-labels-format`.
 
 -------
 
@@ -101,20 +104,20 @@ The package function `text-list-plot` can be used through the corresponding CLI:
 ```shell
 > text-list-plot --help
 # Usage:
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] [<points> ...] -- Makes textual (terminal) plots.
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
-#   text-list-plot [--point-char=<Str>] [--width[=Int]] [--height[=Int]] [--title=<Str>] [--xLabel=<Str>] [--yLabel=<Str>] [--xTickLabelsFormat=<Str>] [--yTickLabelsFormat=<Str>] -- Makes textual (terminal) plots from pipeline input
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] [<points> ...] -- Makes textual (terminal) plots.
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
+#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots from pipeline input
 #   
-#     [<points> ...]               Data points.
-#     --point-char=<Str>           Plot points character. [default: '*']
-#     --width[=Int]                Width of the plot. (-1 for Whatever.) [default: -1]
-#     --height[=Int]               Height of the plot. (-1 for Whatever.) [default: -1]
-#     --title=<Str>                Title of the plot. [default: '']
-#     --xLabel=<Str>               Label of the X-axis. If Whatever, then no label is placed. [default: '']
-#     --yLabel=<Str>               Label of the Y-axis. If Whatever, then no label is placed. [default: '']
-#     --xTickLabelsFormat=<Str>    X-axis tick labels format. [default: '']
-#     --yTickLabelsFormat=<Str>    Y-axis tick labels format. [default: '']
-#     <words>                      String with data points.
+#     [<points> ...]                                      Data points.
+#     -p|--point-char=<Str>                               Plot points character. [default: '*']
+#     -w|--width[=Int]                                    Width of the plot. (-1 for Whatever.) [default: -1]
+#     -h|--height[=Int]                                   Height of the plot. (-1 for Whatever.) [default: -1]
+#     -t|--title=<Str>                                    Title of the plot. [default: '']
+#     --xLabel|--x-label=<Str>                            Label of the X-axis. If Whatever, then no label is placed. [default: '']
+#     --yLabel|--y-label=<Str>                            Label of the Y-axis. If Whatever, then no label is placed. [default: '']
+#     --xTickLabelsFormat|--x-tick-labels-format=<Str>    X-axis tick labels format. [default: '']
+#     --yTickLabelsFormat|--y-tick-labels-format=<Str>    Y-axis tick labels format. [default: '']
+#     <words>                                             String with data points.
 ```
 
 Here is an example of a simple, y-axis values only call:
@@ -183,6 +186,8 @@ the width and height. (The other example do succeed.)
 - [X] Optional tick labels format specs.
 
 - [X] CLI design and implementation.
+
+- [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
 - [ ] Proper respect of width and height.
 
