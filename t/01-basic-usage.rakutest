@@ -6,14 +6,14 @@ use lib './lib';
 
 use Text::Plot;
 
-plan 5;
+plan 6;
 
 ## 1
 isa-ok text-list-plot((^30).List>>.sqrt, width => 100, height => 30), Str, 'no y-values';
 
 ## 2
 my @xs = (0, 0.4 ... 5).List;
-isa-ok text-list-plot(@xs, @xs>>.sin, width => 100, height => 30, xLabel => 'some range'),
+isa-ok text-list-plot(@xs, @xs>>.sin, width => 100, height => 30, x-label => 'some range'),
         Str,
         'with x- and y-values and x-label specs';
 
@@ -21,7 +21,7 @@ isa-ok text-list-plot(@xs, @xs>>.sin, width => 100, height => 30, xLabel => 'som
 isa-ok
         text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List,
                 width => 100, height => 30,
-                xLabel => 'some range', yLabel => 'sqrt value'),
+                x-label => 'some range', y-label => 'sqrt value'),
         Str,
         'with x- and y-values and x- and y-label specs';
 
@@ -36,5 +36,15 @@ isa-ok text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List, title => 'some title'),
 isa-ok text-list-plot( (^@xs.elems Z @xs).List, title => 'some list of pairs'),
         Str,
         'list of two-element lists';
+
+## 6
+isa-ok
+        text-list-plot(@xs, @xs>>.sqrt.map({ -$_ }).List,
+                pointChar => '·',
+                width => 100, height => 30,
+                xLabel => 'some range', yLabel => 'sqrt value'),
+        Str,
+        'x- and y-values with point character, x- and y-label alias specs';
+
 
 done-testing;

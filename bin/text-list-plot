@@ -1,0 +1,90 @@
+#!/usr/bin/env raku
+use v6.d;
+
+use Text::Plot;
+
+#| Makes textual (terminal) plots.
+multi sub MAIN(*@points is copy, #= Data points.
+               Str :p(:$point-char) = '*', #= Plot points character.
+               Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
+               Str :t(:$title) = '', #= Title of the plot.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
+               ) {
+
+    if $width < 0 {
+        my $proc = shell('echo $(tput cols)'):out;
+        my $captured-output = $proc.out.slurp: :close;
+        $width = ($captured-output).Int - 10
+    }
+    if $width ≤ 0 || $width.isa(Inf) { $width = 60 }
+
+    if $height < 0 {
+        my $proc = shell('echo $(tput lines)'):out;
+        my $captured-output = $proc.out.slurp: :close;
+        $height = ($captured-output).Int - 5
+    }
+    if $height ≤ 0 || $height.isa(Inf) { $height = ($width * 0.25).Int }
+
+    my $res = text-list-plot(
+            @points,
+            :$point-char,
+            :$width, :$height,
+            title => $title ?? $title !! Whatever,
+            :$x-label, :$y-label,
+            x-tick-labels-format => $x-tick-labels-format ?? $x-tick-labels-format !! Whatever,
+            y-tick-labels-format => $y-tick-labels-format ?? $y-tick-labels-format !! Whatever);
+    say $res;
+}
+
+#| Makes textual (terminal) plots by splitting a string of data points.
+multi sub MAIN(Str $words, #= String with data points.
+               Str :p(:$point-char) = '*', #= Plot points character.
+               Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
+               Str :t(:$title) = '', #= Title of the plot.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
+               ) {
+
+    my @data;
+    if $words.contains(',') {
+        @data = $words.split(/\s/)>>.split(/','/)>>.Numeric;
+    } else {
+        @data = $words.split(/\D/)>>.Numeric;
+    }
+
+    MAIN(@data,
+            :$point-char,
+            :$width, :$height,
+            :$title,
+            :$x-label, :$y-label,
+            :$x-tick-labels-format,
+            :$y-tick-labels-format)
+
+}
+
+#| Makes textual (terminal) plots from pipeline input
+multi sub MAIN(Str :p(:$point-char) = '*', #= Plot points character.
+               Int :w(:$width) is copy = -1, #= Width of the plot. (-1 for Whatever.)
+               Int :h(:$height) is copy = -1, #= Height of the plot. (-1 for Whatever.)
+               Str :t(:$title) = '', #= Title of the plot.
+               Str :xLabel(:$x-label) = '', #= Label of the X-axis. If Whatever, then no label is placed.
+               Str :yLabel(:$y-label) = '', #= Label of the Y-axis. If Whatever, then no label is placed.
+               Str :xTickLabelsFormat(:$x-tick-labels-format) = '', #= X-axis tick labels format.
+               Str :yTickLabelsFormat(:$y-tick-labels-format) = '', #= Y-axis tick labels format.
+               ) {
+    my $words = lines.join(' ');
+    MAIN($words,
+            :$point-char,
+            :$width, :$height,
+            :$title,
+            :$x-label, :$y-label,
+            :$x-tick-labels-format,
+            :$y-tick-labels-format)
+}
