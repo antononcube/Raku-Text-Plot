@@ -9,7 +9,7 @@ sub is-positional-of-numerics($obj) {
 }
 
 sub is-positional-of-numeric-pairs($obj) {
-    return ($obj ~~ Positional) && ([and] $obj.map({ $_ ~~ Positional && $_.elems == 2 }));
+    return ($obj ~~ Positional) && ([and] $obj.map({ is-positional-of-numerics($_) && $_.elems == 2 }));
 }
 
 #===========================================================
