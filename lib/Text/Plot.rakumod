@@ -138,7 +138,7 @@ multi text-plot-overlay($tplot1, $tplot2) {
         die "The given plots are expected to have the same number of characters.";
     }
 
-    my @p3 = (@p1 Z @p2).map({ $_[0] eq ' ' ?? $_[1] !! $_[0] });
+    my @p3 = (@p1 Z @p2).map({ ($_[1] eq ' ') ?? $_[0] !! $_[1] });
 
     return @p3.join();
 }
