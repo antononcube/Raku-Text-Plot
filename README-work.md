@@ -95,6 +95,17 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 **Remark:** The function `text-list-plot` has camel case aliases for the multi-word named arguments.
 For example, `xLimit` for `x-limit` and `xTickLabelsFormat` for `x-tick-labels-format`.
 
+
+Here is an example of a multi-list plot:
+
+```perl6
+say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
+                    ([1,1], [3,3], [3,2]),
+                    ([1,3], [2,1], [5,2])], point-char => Whatever);
+```
+
+**Remark:** Note that the points `[1,1]` and `[3,2]` of the second list overlay the same points of first list.
+
 -------
 
 ## Command Line Interface (CLI)
@@ -189,6 +200,8 @@ the width and height. (The other example do succeed.)
 
 - [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
+- [X] Multi-list plot support.
+
 - [ ] Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
@@ -211,7 +224,6 @@ the width and height. (The other example do succeed.)
 
 - [ ] `text-bar-chart`
 
-- [ ] Multi-lines plot support.
 
 -------
 

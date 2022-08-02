@@ -161,16 +161,16 @@ my @dsRand = random-tabular-dataset(70, <x y>,
 records-summary(@dsRand);
 ```
 ```
-# +------------------------------+------------------------------+
-# | y                            | x                            |
-# +------------------------------+------------------------------+
-# | Min    => 8.057252136104289  | Min    => 0.5177060612678073 |
-# | 1st-Qu => 10.354892624547558 | 1st-Qu => 2.222631712414722  |
-# | Mean   => 12.126854695771273 | Mean   => 3.925181682937902  |
-# | Median => 11.8318140484967   | Median => 3.7627668597052653 |
-# | 3rd-Qu => 14.108203235842492 | 3rd-Qu => 5.211415597782294  |
-# | Max    => 16.95126915162558  | Max    => 9.32933411299236   |
-# +------------------------------+------------------------------+
+# +-------------------------------+------------------------------+
+# | x                             | y                            |
+# +-------------------------------+------------------------------+
+# | Min    => -0.9954833520919175 | Min    => 5.889337210606804  |
+# | 1st-Qu => 2.4618033540669657  | 1st-Qu => 10.262915243722706 |
+# | Mean   => 3.7969073471031507  | Mean   => 12.416158189508215 |
+# | Median => 3.4723152968399544  | Median => 12.547803843669296 |
+# | 3rd-Qu => 5.295629015632202   | 3rd-Qu => 14.471747043316954 |
+# | Max    => 8.02912075714216    | Max    => 19.903020387445054 |
+# +-------------------------------+------------------------------+
 ```
 
 ```perl6
@@ -183,14 +183,14 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 # ++---------+--------+---------+--------+---------+--------++       
 # +                                                          +  25.00
 # |                                                          |       
-# +                                                          +  20.00
-# |                                                          |       
-# |                  *       *   *    ***      *             |       
-# +            *    *   * * * * *  *   *  *              *   +  15.00
-# |              *  * **     ** ** **     * * *      *       |       
-# +               **** ***  * **    *       *       *        +  10.00
-# |            *    ** **           **        *              |       
-# |                                                          |       
+# +              *                                           +  20.00
+# |              *          * *                              |       
+# |                     *   *         *                      |       
+# +              *  * *  *  *****  * * **          *         +  15.00
+# |     *              ******    * * ** * ** *               |       
+# +                    * *  **  **    *      *               +  10.00
+# |           *       **   *   *  *        *                 |       
+# |                  *  *  *       *  *                      |       
 # +                                                          +   5.00
 # |                                                          |       
 # +                                                          +   0.00
@@ -200,6 +200,35 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 
 **Remark:** The function `text-list-plot` has camel case aliases for the multi-word named arguments.
 For example, `xLimit` for `x-limit` and `xTickLabelsFormat` for `x-tick-labels-format`.
+
+
+Here is an example of a multi-list plot:
+
+```perl6
+say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
+                    ([1,1], [3,3], [3,2]),
+                    ([1,3], [2,1], [5,2])], point-char => Whatever);
+```
+```
+# +---+------------+-----------+------------+------------+---+      
+# |                                                          |      
+# +                *                        *                +  5.00
+# |                                                          |      
+# +                                                          +  4.00
+# |                                                          |      
+# |                                                          |      
+# +   ❍                        □                             +  3.00
+# |                                                          |      
+# |                                                          |      
+# +                            □                         ❍   +  2.00
+# |                                                          |      
+# +   □            ❍                                         +  1.00
+# |                                                          |      
+# +---+------------+-----------+------------+------------+---+      
+#     1.00         2.00        3.00         4.00         5.00
+```
+
+**Remark:** Note that the points `[1,1]` and `[3,2]` of the second list overlay the same points of first list.
 
 -------
 
@@ -295,6 +324,8 @@ the width and height. (The other example do succeed.)
 
 - [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
+- [X] Multi-list plot support.
+
 - [ ] Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
@@ -317,7 +348,6 @@ the width and height. (The other example do succeed.)
 
 - [ ] `text-bar-chart`
 
-- [ ] Multi-lines plot support.
 
 -------
 
