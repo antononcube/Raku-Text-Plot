@@ -126,6 +126,24 @@ multi rescale(@x,
 }
 
 #===========================================================
+#| Overlay text plots
+proto text-plot-overlay(|) is export {*}
+
+#| Overlay text plots
+multi text-plot-overlay($tplot1, $tplot2) {
+    my @p1 = $tplot1.comb.flat;
+    my @p2 = $tplot2.comb.flat;
+
+    if @p1.elems != @p2.elems {
+        die "The given plots are expected to have the same number of characters.";
+    }
+
+    my @p3 = (@p1 Z @p2).map({ $_[0] eq ' ' ?? $_[1] !! $_[0] });
+
+    return @p3.join();
+}
+
+#===========================================================
 #| Make a string that represents a list-plot of the given arguments.
 #| * C<$x> - Data points. If C<$y> is specified then C<$x> is interpreted as X-coordinates.
 #| * C<$y> - Y-coordinates.
@@ -143,8 +161,51 @@ proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
     if is-positional-of-numeric-pairs($x) {
+
         return text-list-plot($x.map(*[0]).List, $x.map(*[1]).List, |%args);
+
+    } elsif $x ~~ Positional && ([&&] $x.map({ is-positional-of-numeric-pairs($_) })) {
+
+        my @pchars;
+        if %args<point-char>:exists && (%args<point-char>.isa(Whatever) || %args<point-char> ~~ Str) {
+            if $x.elems ≤ 10 {
+                @pchars = <* □ ❍ ▽ ◇ ◦ ☉ ♡ ♺ ✝︎>[^$x.elems];
+            } elsif $x.elems ≤ 26 {
+                @pchars = ('a'..'z')[^$x.elems];
+            }
+            if %args<point-char> ~~ Str { @pchars[0] = %args<point-char>; }
+
+        } elsif %args<point-char>:exists {
+            if %args<point-char> ~~ Positional && %args<point-char>.elems ≥ $x.elems {
+                @pchars = |%args<point-char>;
+            }
+        }
+
+        die "Please provide {$x.elems} point characters (for the argument 'point-char')." unless @pchars;
+
+        @pchars = @pchars[^$x.elems];
+
+        my $xRange = [Inf, -Inf];
+        for $x.Array -> $x {
+            my $r = get-range( $x.map({ $_[0] }) );
+            $xRange[0] = min($xRange[0], $r[0]);
+            $xRange[1] = max($xRange[1], $r[1]);
+        }
+
+        my $yRange = [Inf, -Inf];
+        for $x.Array -> $x {
+            my $r = get-range( $x.map({ $_[1] }) );
+            $yRange[0] = min($yRange[0], $r[0]);
+            $yRange[1] = max($yRange[1], $r[1]);
+        }
+
+        my @tplots = ($x.Array Z @pchars).map({ text-list-plot($_[0], |%args, point-char => $_[1], x-limit => $xRange, y-limit => $yRange) });
+        my $res = @tplots[0];
+        for @tplots[1..(*-1)] -> $tp { $res = text-plot-overlay($res, $tp) }
+        return $res;
+
     }
+
     return text-list-plot((^$x.elems).List, $x.List, |%args);
 }
 
@@ -171,7 +232,7 @@ multi text-list-plot($x is copy,
     }
 
     if $y.elems != $x.elems {
-        die "If both first and second arguments are given they are expected to be the positionals with same number of elements."
+        die "If both first and second arguments are given, then they are expected to be the positionals with same number of elements."
     }
 
     if !($width ~~ Numeric || $height ~~ Numeric) {
