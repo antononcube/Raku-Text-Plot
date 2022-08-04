@@ -1,7 +1,7 @@
 {
   "name": "Text::Plot",
   "description": "Text plots.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
