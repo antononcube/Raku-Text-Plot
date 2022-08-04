@@ -166,18 +166,20 @@ multi text-list-plot($x, *%args) {
 
     } elsif $x ~~ Positional && ([&&] $x.map({ is-positional-of-numeric-pairs($_) })) {
 
+        my $pcharSpec = %args<point-char>:exists ?? %args<point-char> !! Whatever;
+
         my @pchars;
-        if %args<point-char>:exists && (%args<point-char>.isa(Whatever) || %args<point-char> ~~ Str) {
+        if $pcharSpec.isa(Whatever) || $pcharSpec ~~ Str {
             if $x.elems ≤ 10 {
-                @pchars = <* □ ❍ ▽ ◇ ◦ ☉ ♡ ♺ ✝︎>[^$x.elems];
+                @pchars = <* □ ▽ ⎔ ◇ ⌽ ☉ ▷ ❍ ✝︎>[^$x.elems];
             } elsif $x.elems ≤ 26 {
                 @pchars = ('a'..'z')[^$x.elems];
             }
-            if %args<point-char> ~~ Str { @pchars[0] = %args<point-char>; }
+            if $pcharSpec ~~ Str { @pchars[0] = $pcharSpec; }
 
-        } elsif %args<point-char>:exists {
-            if %args<point-char> ~~ Positional && %args<point-char>.elems ≥ $x.elems {
-                @pchars = |%args<point-char>;
+        } else {
+            if $pcharSpec ~~ Positional && $pcharSpec.elems ≥ $x.elems {
+                @pchars = |$pcharSpec;
             }
         }
 
