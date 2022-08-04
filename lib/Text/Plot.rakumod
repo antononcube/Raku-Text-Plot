@@ -170,8 +170,8 @@ multi text-list-plot($x, *%args) {
 
         my @pchars;
         if $pcharSpec.isa(Whatever) || $pcharSpec ~~ Str {
-            if $x.elems ≤ 10 {
-                @pchars = <* □ ▽ ⎔ ◇ ⌽ ☉ ▷ ❍ ✝︎>[^$x.elems];
+            if $x.elems ≤ 7 {
+                @pchars = <* □ ▽ ❍ ◇ ▷ ☉>[^$x.elems];
             } elsif $x.elems ≤ 26 {
                 @pchars = ('a'..'z')[^$x.elems];
             }
