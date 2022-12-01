@@ -1,0 +1,25 @@
+use v6.d;
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use Text::Plot;
+
+plan 3;
+
+## 1
+isa-ok text-pareto-principle-plot((^300).roll(30).List, width => 100, height => 30), Str, 'numeric vector call';
+
+## 1
+isa-ok text-pareto-principle-plot(('a'..'z').roll(30).List, width => 100, height => 30), Str, 'string vector call';
+
+## 3
+my @vec3 = ('a'..'z').roll(130).List;
+
+my $tpres31 = text-pareto-principle-plot(@vec3.BagHash.values.Array, title => 'Random strings', width => 80):normalize;
+my $tpres32 = text-pareto-principle-plot(@vec3, title => 'Random strings', width => 80):normalize;
+
+is $tpres31, $tpres32, 'equivalence of string and tally calls';
+
+done-testing;
