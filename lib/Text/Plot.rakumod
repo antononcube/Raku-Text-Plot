@@ -448,10 +448,6 @@ multi text-pareto-principle-plot($x, *%args) {
         @cumSum = @cumSum X* 1/$tsum;
     }
 
-    # Pareto axis ticks
-    my %hp = text-list-plot(@cumSum, |%args2, format => 'hash');
-    .say for %hp.grep({ $_.key ne 'plot'}).Hash;
-
     # Base list-plot
     my $basePlot = text-list-plot(@cumSum, |%args2);
 
