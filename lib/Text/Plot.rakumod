@@ -12,6 +12,10 @@ sub is-positional-of-numeric-pairs($obj) {
     return ($obj ~~ Positional) && ([and] $obj.map({ is-positional-of-numerics($_) && $_.elems == 2 }));
 }
 
+sub is-positional-of-strings($obj) {
+    return ($obj ~~ Positional) && ([and] $obj.map({ $_ ~~ Str }));
+}
+
 #===========================================================
 sub get-range(@x, $frac = 0.05) {
     my @ux = unique(@x).List;
@@ -147,16 +151,16 @@ multi text-plot-overlay($tplot1, $tplot2) {
 #| Make a string that represents a list-plot of the given arguments.
 #| * C<$x> - Data points. If C<$y> is specified then C<$x> is interpreted as X-coordinates.
 #| * C<$y> - Y-coordinates.
-#| * C<$point-char> - Plot points character.
-#| * C<$width> - Width of the plot.
-#| * C<$height> - Height of the plot.
-#| * C<$title> - Title of the plot.
-#| * C<$x-label> - Label of the X-axis. If Whatever, then no label is placed.
-#| * C<$y-label> - Label of the Y-axis. If Whatever, then no label is placed.
-#| * C<$x-limit> - Limits for the X-axis.
-#| * C<$y-limit> - Limits for the Y-axis.
-#| * C<$x-tick-labels-format> - X-axis tick labels format.
-#| * C<$y-tick-labels-format> - Y-axis tick labels format.
+#| * C<:$point-char> - Plot points character.
+#| * C<:$width> - Width of the plot.
+#| * C<:$height> - Height of the plot.
+#| * C<:$title> - Title of the plot.
+#| * C<:$x-label> - Label of the X-axis. If Whatever, then no label is placed.
+#| * C<:$y-label> - Label of the Y-axis. If Whatever, then no label is placed.
+#| * C<:$x-limit> - Limits for the X-axis.
+#| * C<:$y-limit> - Limits for the Y-axis.
+#| * C<:$x-tick-labels-format> - X-axis tick labels format.
+#| * C<:$y-tick-labels-format> - Y-axis tick labels format.
 proto text-list-plot($x, |) is export {*}
 
 multi text-list-plot($x, *%args) {
@@ -254,7 +258,7 @@ multi text-list-plot($x is copy,
         when $_ ~~ Numeric { @xrange = (0, $x-limit).sort.List; }
         when $_ ~~ Positional && $_.elems == 2 { @xrange = [|$_.sort] }
         default {
-            die 'The value of the xLimit is expected a number, a list of two numbers, or Whatever.';
+            die 'The value of the x-limit is expected a number, a list of two numbers, or Whatever.';
         }
     }
 
@@ -264,7 +268,7 @@ multi text-list-plot($x is copy,
         when $_ ~~ Numeric { @yrange = (0, $y-limit).sort.List; }
         when $_ ~~ Positional && $_.elems == 2 { @yrange = [|$_.sort] }
         default {
-            die 'The value of the yLimit is expected a number, a list of two numbers, or Whatever.';
+            die 'The value of the y-limit is expected a number, a list of two numbers, or Whatever.';
         }
     }
 
@@ -310,7 +314,7 @@ multi text-list-plot($x is copy,
         my $b = ceiling(log10(max(@xticks>>.abs)));
         $x-tick-labels-format = "%{$b+5}.2f"
     } elsif ! $x-tick-labels-format ~~ Str {
-        die "The value of the argument xTickFormatLable is expected to be a string or Whatever."
+        die "The value of the argument x-tick-labels-format is expected to be a string or Whatever."
     }
 
     my %xticksMarks = @xticks>>.fmt($x-tick-labels-format) Z=> @xticksMarks;
@@ -335,7 +339,7 @@ multi text-list-plot($x is copy,
         my $b = ceiling(log10(max(@yticks>>.abs)));
         $y-tick-labels-format = "%{$b+5}.2f"
     } elsif ! $y-tick-labels-format ~~ Str {
-        die "The value of the argument yTickFormatLable is expected to be a string or Whatever."
+        die "The value of the argument y-tick-labels-format is expected to be a string or Whatever."
     }
 
     my %yticksMarks = @yticks>>.fmt($y-tick-labels-format) Z=> @yticksMarks;
@@ -389,8 +393,9 @@ multi text-list-plot($x is copy,
     # Place title
     #------------------------------------------------------
 
+    my @labelLine;
     if $title ~~ Str {
-        my @labelLine = ' ' xx $width;
+        @labelLine = ' ' xx $width;
         for ^($title.Str.chars) -> $i {
             @labelLine[$width / 2 - $title.chars / 2 + $i] = $title.comb[$i]
         }
@@ -399,4 +404,57 @@ multi text-list-plot($x is copy,
 
     #------------------------------------------------------
     return @res>>.join.join("\n");
+}
+
+#===========================================================
+#| Make a string that represents a Pareto principle adherence list-plot of the given arguments.
+#| Takes all optional arguments as C<&text-list-plot>.
+#| * C<$x> - Data vector with elements that are numbers or strings.
+#| * C<:$normalize> - Should the cumulative sum be normalized or not?
+#| * C<:$point-char> - Plot points character.
+#| * C<:$width> - Width of the plot.
+#| * C<:$height> - Height of the plot.
+#| * C<:$title> - Title of the plot.
+#| * C<:$x-label> - Label of the X-axis. If Whatever, then no label is placed.
+#| * C<:$y-label> - Label of the Y-axis. If Whatever, then no label is placed.
+#| * C<:$x-limit> - Limits for the X-axis.
+#| * C<:$y-limit> - Limits for the Y-axis.
+#| * C<:$x-tick-labels-format> - X-axis tick labels format.
+#| * C<:$y-tick-labels-format> - Y-axis tick labels format.
+proto text-pareto-principle-plot($x, *%args) is export {*}
+
+multi text-pareto-principle-plot($x, *%args) {
+
+    my @tally;
+    if is-positional-of-numerics($x) {
+        @tally = |$x;
+    } elsif is-positional-of-strings($x) {
+        @tally = |$x.BagHash.values;
+    } else {
+        die "The first argument is expected to be a Positional with Numeric objects or Positional with Str objects.";
+    }
+
+    my %args2 = |%args.grep({ $_.key ne 'normalize' }).Hash;
+
+    # Pareto statistic computations
+    @tally = @tally.sort.reverse;
+
+    my Bool $normalize = %args<normalize> // True;
+
+    my @cumSum = produce(&[+], @tally);
+
+    my $tsum = @tally.sum;
+    if $normalize && $tsum != 0 {
+        @cumSum = @cumSum X* 1/$tsum;
+    }
+
+    # Pareto axis ticks
+    my %hp = text-list-plot(@cumSum, |%args2, format => 'hash');
+    .say for %hp.grep({ $_.key ne 'plot'}).Hash;
+
+    # Base list-plot
+    my $basePlot = text-list-plot(@cumSum, |%args2);
+
+    # Result
+    return $basePlot;
 }
