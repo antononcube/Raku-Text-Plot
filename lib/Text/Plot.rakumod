@@ -130,6 +130,30 @@ multi rescale(@x,
 }
 
 #===========================================================
+sub make-tick-text-line(@xticks is copy, @xrange, UInt $width, Str $x-tick-labels-format, &x-tick-labels-func = WhateverCode) {
+    my @xticksMarks = rescale(@xticks, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
+
+    if ! &x-tick-labels-func.isa(WhateverCode) {
+        @xticks = @xticks>>.&x-tick-labels-func
+    }
+
+    my %xticksMarks = @xticks>>.fmt($x-tick-labels-format) Z=> @xticksMarks;
+
+    @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
+    %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
+
+    my @tickTextLine = ' ' xx $width;
+    for %xticksMarks.kv -> $k, $v {
+        my $t = $k.trim;
+        for ^($t.chars) -> $i {
+            @tickTextLine[$v + $i] = $t.comb[$i]
+        }
+    }
+
+    return %(:@tickTextLine, :@xticksMarks)
+}
+
+#===========================================================
 #| Overlay text plots
 proto text-plot-overlay(|) is export {*}
 
@@ -307,30 +331,20 @@ multi text-list-plot($x is copy,
     #------------------------------------------------------
     # Place tick marks
     #------------------------------------------------------
-
-    my @xticksMarks = rescale(@xticks, (@xrange[0], @xrange[1]), (1, $width - 2))>>.round;
-
     if $x-tick-labels-format.isa(Whatever) {
         my $b = ceiling(log10(max(@xticks>>.abs)));
-        $x-tick-labels-format = "%{$b+5}.2f"
-    } elsif ! $x-tick-labels-format ~~ Str {
+        $x-tick-labels-format = "%{ $b + 5 }.2f"
+    } elsif !$x-tick-labels-format ~~ Str {
         die "The value of the argument x-tick-labels-format is expected to be a string or Whatever."
     }
 
-    my %xticksMarks = @xticks>>.fmt($x-tick-labels-format) Z=> @xticksMarks;
-
-    @xticksMarks = @xticksMarks.grep({ 1 ≤ $_ ≤ $width - 2 }).List;
-    %xticksMarks = %xticksMarks.grep({ 1 ≤ $_.value ≤ $width - 2 }).List;
+    my %ttlRes = make-tick-text-line(@xticks, @xrange, $width, $x-tick-labels-format);
+    my @tickTextLine = |%ttlRes<tickTextLine>;
+    my @xticksMarks = |%ttlRes<xticksMarks>;
 
     for @xticksMarks -> $i { @res[0][$i] = '+' }
     for @xticksMarks -> $i { @res[$height - 1][$i] = '+' }
-    my @tickTextLine = ' ' xx $width;
-    for %xticksMarks.kv -> $k, $v {
-        my $t = $k.trim;
-        for ^($t.chars) -> $i {
-            @tickTextLine[$v + $i] = $t.comb[$i]
-        }
-    }
+
     @res.append($(@tickTextLine));
 
     my @yticksMarks = rescale(@yticks, (@yrange[0], @yrange[1]), ($height - 2, 1))>>.round;
@@ -393,9 +407,8 @@ multi text-list-plot($x is copy,
     # Place title
     #------------------------------------------------------
 
-    my @labelLine;
     if $title ~~ Str {
-        @labelLine = ' ' xx $width;
+        my @labelLine = ' ' xx $width;
         for ^($title.Str.chars) -> $i {
             @labelLine[$width / 2 - $title.chars / 2 + $i] = $title.comb[$i]
         }
@@ -448,8 +461,16 @@ multi text-pareto-principle-plot($x, *%args) {
         @cumSum = @cumSum X* 1/$tsum;
     }
 
+    # Pareto axis ticks
+    my @pRange = get-range((^@cumSum.elems).List);
+    my @pTicks = get-ticks(@pRange);
+    my %ttlRes = make-tick-text-line(@pTicks, @pRange, %args<width> // 60, '%3.2f', { $_ / @cumSum.elems} );
+
     # Base list-plot
     my $basePlot = text-list-plot(@cumSum, |%args2);
+
+    # Hacky solution to add the Pareto ticks in case a title has been put in
+    $basePlot ~~ s/ [ ^ | <?after \s> ] '+' ['-' | '+']+ '+' <?before \s>/{%ttlRes<tickTextLine>.join}\n$//;
 
     # Result
     return $basePlot;
