@@ -7,6 +7,7 @@ Here is the list of functions:
 - [X] `text-list-plot`
 - [ ] `text-plot`
 - [ ] `text-bar-chart`
+- [ ] `text-pareto-principle-plot`
 
 ***Currently only `text-list-plot` is implemented.***
 
@@ -24,19 +25,21 @@ But that would require dependency on a certain statistical package.
 
 From zef-ecosystem:
 
-```shell
+```
 zef install Text::Plot
 ```
 
 From GitHub:
 
-```shell
+```
 zef install https://github.com/antononcube/Raku-Text-Plot.git
 ```
 
 ------
 
 ## Usage examples
+
+### `text-list-plot`
 
 Simple plot with y-values only:
 
@@ -106,6 +109,24 @@ say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
 
 **Remark:** Note that the points `[1,1]` and `[3,2]` of the second list overlay the same points of first list.
 
+### `text-pareto-principle-plot`
+
+Assume we have a data vector with all numeric or with all string elements.
+The adherence of the data vector to the Pareto principle can be easily verified with the plots of
+`text-pareto-principle-plot`. 
+
+Here is an example with a numeric vector: 
+
+```perl6
+text-pareto-principle-plot( random-real(10, 300), title => 'Random reals')
+```
+
+Here is an example with a vector of strings: 
+
+```perl6
+text-pareto-principle-plot( random-pet-name(500), title => 'Random pet names')
+```
+
 -------
 
 ## Command Line Interface (CLI)
@@ -113,22 +134,7 @@ say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
 The package function `text-list-plot` can be used through the corresponding CLI:
 
 ```shell
-> text-list-plot --help
-# Usage:
-#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] [<points> ...] -- Makes textual (terminal) plots.
-#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
-#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots from pipeline input
-#   
-#     [<points> ...]                                      Data points.
-#     -p|--point-char=<Str>                               Plot points character. [default: '*']
-#     -w|--width[=Int]                                    Width of the plot. (-1 for Whatever.) [default: -1]
-#     -h|--height[=Int]                                   Height of the plot. (-1 for Whatever.) [default: -1]
-#     -t|--title=<Str>                                    Title of the plot. [default: '']
-#     --xLabel|--x-label=<Str>                            Label of the X-axis. If Whatever, then no label is placed. [default: '']
-#     --yLabel|--y-label=<Str>                            Label of the Y-axis. If Whatever, then no label is placed. [default: '']
-#     --xTickLabelsFormat|--x-tick-labels-format=<Str>    X-axis tick labels format. [default: '']
-#     --yTickLabelsFormat|--y-tick-labels-format=<Str>    Y-axis tick labels format. [default: '']
-#     <words>                                             String with data points.
+text-list-plot --help
 ```
 
 Here is an example of a simple, y-axis values only call:
@@ -146,24 +152,7 @@ text-list-plot "22,32 10,39 13,32 14,20"
 Here is an example pipeline:
 
 ```shell
-> raku -e 'say (^1000).roll(21)' | text-list-plot
-# +---+------------+-----------+------------+------------+---+          
-# |                                                          |          
-# |     *                                                    |          
-# +                *                        *            *   +  800.00  
-# |                            *                    *        |          
-# |                     *                         *          |          
-# +                                                          +  600.00  
-# |                          *                               |          
-# |          *                       *                       |          
-# +                               *    *                     +  400.00  
-# |        *         *                                       |          
-# |                       *               *            *     |          
-# +   *         *                                            +  200.00  
-# |                                            *             |          
-# |                                                          |          
-# +---+------------+-----------+------------+------------+---+          
-#     0.00         5.00        10.00        15.00        20.00    
+raku -e 'say (^1000).roll(21)' | text-list-plot
 ```
 
 **Remark:** Attempt is made plot's width and height are determined automatically, using terminal's number of columns and
@@ -202,6 +191,8 @@ the width and height. (The other example do succeed.)
 
 - [X] Multi-list plot support.
 
+- [X] Plot title.
+
 - [ ] Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
@@ -210,19 +201,19 @@ the width and height. (The other example do succeed.)
 
     - It was just much easier to put them on the right.
 
-    - BTW, this is probably a bug -- the width of "total plot" is larger than the specified.
+    - BTW, this is probably a bug -- the width of the "total plot" is larger than the specified.
 
-- [ ] Optional placement tick values.
+- [ ] Optional placement of tick values.
 
-- [ ] Plot title.
-
-    - I am not sure is it needed.
+- [ ] `text-pareto-principle-plot`
 
 - [ ] `text-plot`
 
     - Easy to implement inlined with `text-plot`, but it might give a simpler interface.
 
 - [ ] `text-bar-chart`
+
+- [ ] `text-histogram`
 
 
 -------

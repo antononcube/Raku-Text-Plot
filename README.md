@@ -7,6 +7,7 @@ Here is the list of functions:
 - [X] `text-list-plot`
 - [ ] `text-plot`
 - [ ] `text-bar-chart`
+- [ ] `text-pareto-principle-plot`
 
 ***Currently only `text-list-plot` is implemented.***
 
@@ -24,19 +25,21 @@ But that would require dependency on a certain statistical package.
 
 From zef-ecosystem:
 
-```shell
+```
 zef install Text::Plot
 ```
 
 From GitHub:
 
-```shell
+```
 zef install https://github.com/antononcube/Raku-Text-Plot.git
 ```
 
 ------
 
 ## Usage examples
+
+### `text-list-plot`
 
 Simple plot with y-values only:
 
@@ -164,12 +167,12 @@ records-summary(@dsRand);
 # +-------------------------------+------------------------------+
 # | x                             | y                            |
 # +-------------------------------+------------------------------+
-# | Min    => -0.9954833520919175 | Min    => 5.889337210606804  |
-# | 1st-Qu => 2.4618033540669657  | 1st-Qu => 10.262915243722706 |
-# | Mean   => 3.7969073471031507  | Mean   => 12.416158189508215 |
-# | Median => 3.4723152968399544  | Median => 12.547803843669296 |
-# | 3rd-Qu => 5.295629015632202   | 3rd-Qu => 14.471747043316954 |
-# | Max    => 8.02912075714216    | Max    => 19.903020387445054 |
+# | Min    => 0.32408825955040177 | Min    => 5.9931871245751775 |
+# | 1st-Qu => 2.7843876207792415  | 1st-Qu => 9.876678419163488  |
+# | Mean   => 4.08462575674799    | Mean   => 11.745888178167041 |
+# | Median => 4.0537648984346815  | Median => 11.802070475718413 |
+# | 3rd-Qu => 5.234788626034089   | 3rd-Qu => 13.148085341313088 |
+# | Max    => 10.57130574492772   | Max    => 18.389289264928514 |
 # +-------------------------------+------------------------------+
 ```
 
@@ -183,14 +186,14 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 # ++---------+--------+---------+--------+---------+--------++       
 # +                                                          +  25.00
 # |                                                          |       
-# +              *                                           +  20.00
-# |              *          * *                              |       
-# |                     *   *         *                      |       
-# +              *  * *  *  *****  * * **          *         +  15.00
-# |     *              ******    * * ** * ** *               |       
-# +                    * *  **  **    *      *               +  10.00
-# |           *       **   *   *  *        *                 |       
-# |                  *  *  *       *  *                      |       
+# +                                                          +  20.00
+# |                        * *               *               |       
+# |                          *     * *   *                   |       
+# +                *     * *   **  **   **                   +  15.00
+# |             * *    * * * ***** * * * * **   *            | *     
+# +           *  *  *  * ** **  * * * *   *                  +  10.00
+# |             *       * **      * *    *  *                |       
+# |                *   *  *      * *     *                   |       
 # +                                                          +   5.00
 # |                                                          |       
 # +                                                          +   0.00
@@ -217,18 +220,76 @@ say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
 # +                                                          +  4.00
 # |                                                          |      
 # |                                                          |      
-# +   ❍                        □                             +  3.00
+# +   ▽                        □                             +  3.00
 # |                                                          |      
 # |                                                          |      
-# +                            □                         ❍   +  2.00
+# +                            □                         ▽   +  2.00
 # |                                                          |      
-# +   □            ❍                                         +  1.00
+# +   □            ▽                                         +  1.00
 # |                                                          |      
 # +---+------------+-----------+------------+------------+---+      
 #     1.00         2.00        3.00         4.00         5.00
 ```
 
 **Remark:** Note that the points `[1,1]` and `[3,2]` of the second list overlay the same points of first list.
+
+### `text-pareto-principle-plot`
+
+Assume we have a data vector with all numeric or with all string elements.
+The adherence of the data vector to the Pareto principle can be easily verified with the plots of
+`text-pareto-principle-plot`. 
+
+Here is an example with a numeric vector: 
+
+```perl6
+text-pareto-principle-plot( random-real(10, 300), title => 'Random reals')
+```
+```
+# Random reals                        
+#     0.00    0.17     0.33     0.50    0.67     0.83    1.00 
+# +---+-------+--------+--------+-------+--------+-------+---+      
+# |                                                          |      
+# +                                        ***************   +  1.00
+# |                                  *******                 |      
+# +                             ******                       +  0.80
+# |                        ******                            |      
+# +                     ****                                 +  0.60
+# |                 ****                                     |      
+# +              ****                                        +  0.40
+# |           ****                                           |      
+# +        ****                                              +  0.20
+# |     ****                                                 |      
+# |   ***                                                    |      
+# +                                                          +  0.00
+# +---+-------+--------+--------+-------+--------+-------+---+      
+#     0.00    50.00    100.00   150.00  200.00   250.00  300.00
+```
+
+Here is an example with a vector of strings: 
+
+```perl6
+text-pareto-principle-plot( random-pet-name(500), title => 'Random pet names')
+```
+```
+# Random pet names                      
+#     0.00     0.19      0.37      0.56     0.75      0.94    
+# +---+--------+---------+---------+--------+---------+------+      
+# |                                                          |      
+# +                                               ********   +  1.00
+# |                                       *********          |      
+# +                              *********                   +  0.80
+# |                      *********                           |      
+# +               ********                                   +  0.60
+# |           ****                                           |      
+# |       ****                                               |      
+# +     ***                                                  +  0.40
+# |   ***                                                    |      
+# +   *                                                      +  0.20
+# |   *                                                      |      
+# +                                                          +  0.00
+# +---+--------+---------+---------+--------+---------+------+      
+#     0.00     50.00     100.00    150.00   200.00    250.00
+```
 
 -------
 
@@ -237,10 +298,12 @@ say text-list-plot([([1,1], [2,5], [3,2], [4,5]),
 The package function `text-list-plot` can be used through the corresponding CLI:
 
 ```shell
-> text-list-plot --help
+text-list-plot --help
+```
+```
 # Usage:
-#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] [<points> ...] -- Makes textual (terminal) plots.
-#   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] <words> -- Makes textual (terminal) plots by splitting a string of data points.
+#   text-list-plot [<points> ...] [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots.
+#   text-list-plot <words> [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots by splitting a string of data points.
 #   text-list-plot [-p|--point-char=<Str>] [-w|--width[=Int]] [-h|--height[=Int]] [-t|--title=<Str>] [--xLabel|--x-label=<Str>] [--yLabel|--y-label=<Str>] [--xTickLabelsFormat|--x-tick-labels-format=<Str>] [--yTickLabelsFormat|--y-tick-labels-format=<Str>] -- Makes textual (terminal) plots from pipeline input
 #   
 #     [<points> ...]                                      Data points.
@@ -260,34 +323,73 @@ Here is an example of a simple, y-axis values only call:
 ```shell
 text-list-plot 33 12 21 10 3 4 
 ```
+```
+# +---+-------------+------------+-------------+------------+------------+----+         
+# +                                                                           +  35.00  
+# |   *                                                                       |         
+# +                                                                           +  30.00  
+# |                                                                           |         
+# +                                                                           +  25.00  
+# |                              *                                            |         
+# +                                                                           +  20.00  
+# |                                                                           |         
+# +                                                                           +  15.00  
+# |                 *                                                         |         
+# +                                            *                              +  10.00  
+# |                                                                           |         
+# +                                                         *            *    +   5.00  
+# |                                                                           |         
+# +---+-------------+------------+-------------+------------+------------+----+         
+#     0.00          1.00         2.00          3.00         4.00         5.00
+```
 
 Here is an example of 2D points call:
 
 ```shell
 text-list-plot "22,32 10,39 13,32 14,20"
 ```
+```
+# +---+-----------+----------+----------+----------+----------+----------+----+         
+# +                                                                           +  40.00  
+# |   *                                                                       |         
+# |                                                                           |         
+# +                                                                           +  35.00  
+# |                                                                           |         
+# |                    *                                                 *    |         
+# +                                                                           +  30.00  
+# |                                                                           |         
+# |                                                                           |         
+# +                                                                           +  25.00  
+# |                                                                           |         
+# |                                                                           |         
+# +                          *                                                +  20.00  
+# |                                                                           |         
+# +---+-----------+----------+----------+----------+----------+----------+----+         
+#     10.00       12.00      14.00      16.00      18.00      20.00      22.00
+```
 
 Here is an example pipeline:
 
 ```shell
-> raku -e 'say (^1000).roll(21)' | text-list-plot
-# +---+------------+-----------+------------+------------+---+          
-# |                                                          |          
-# |     *                                                    |          
-# +                *                        *            *   +  800.00  
-# |                            *                    *        |          
-# |                     *                         *          |          
-# +                                                          +  600.00  
-# |                          *                               |          
-# |          *                       *                       |          
-# +                               *    *                     +  400.00  
-# |        *         *                                       |          
-# |                       *               *            *     |          
-# +   *         *                                            +  200.00  
-# |                                            *             |          
-# |                                                          |          
-# +---+------------+-----------+------------+------------+---+          
-#     0.00         5.00        10.00        15.00        20.00    
+raku -e 'say (^1000).roll(21)' | text-list-plot
+```
+```
+# +---+----------+-----------+-----------+-----------+-------+           
+# +                                                          +  1000.00  
+# |       *         *               *             *          |           
+# |                                                          |           
+# +                                      *                   +   800.00  
+# |            *                                     *       |           
+# +     *                    *                               +   600.00  
+# |          *        *                                      |           
+# +                            *           *    *            +   400.00  
+# |                               *                          |           
+# +              *      *  *                                 +   200.00  
+# |                                           *              |           
+# +   *                               *                * *   +     0.00  
+# |                                                          |           
+# +---+----------+-----------+-----------+-----------+-------+           
+#     0.00       5.00        10.00       15.00       20.00
 ```
 
 **Remark:** Attempt is made plot's width and height are determined automatically, using terminal's number of columns and
@@ -326,6 +428,8 @@ the width and height. (The other example do succeed.)
 
 - [X] Multi-list plot support.
 
+- [X] Plot title.
+
 - [ ] Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
@@ -334,19 +438,19 @@ the width and height. (The other example do succeed.)
 
     - It was just much easier to put them on the right.
 
-    - BTW, this is probably a bug -- the width of "total plot" is larger than the specified.
+    - BTW, this is probably a bug -- the width of the "total plot" is larger than the specified.
 
-- [ ] Optional placement tick values.
+- [ ] Optional placement of tick values.
 
-- [ ] Plot title.
-
-    - I am not sure is it needed.
+- [ ] `text-pareto-principle-plot`
 
 - [ ] `text-plot`
 
     - Easy to implement inlined with `text-plot`, but it might give a simpler interface.
 
 - [ ] `text-bar-chart`
+
+- [ ] `text-histogram`
 
 
 -------
