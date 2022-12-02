@@ -3,6 +3,8 @@ use v6.d;
 
 use Text::Plot;
 
+my %*SUB-MAIN-OPTS = :named-anywhere;
+
 #| Makes textual (terminal) plots.
 multi sub MAIN(*@points is copy, #= Data points.
                Str :p(:$point-char) = '*', #= Plot points character.
