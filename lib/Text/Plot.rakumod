@@ -440,7 +440,7 @@ multi text-pareto-principle-plot($x, *%args) {
 
     my @tally;
     if $x ~~ Map {
-        @tally = |$x.keys.BagHash.values;;
+        @tally = |$x.keys.BagHash.values;
     } elsif is-positional-of-numeric-pairs($x) {
         @tally = |$x.map({ $_[1] });
     } elsif is-positional-of-numerics($x) {
