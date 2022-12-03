@@ -439,12 +439,16 @@ proto text-pareto-principle-plot($x, *%args) is export {*}
 multi text-pareto-principle-plot($x, *%args) {
 
     my @tally;
-    if is-positional-of-numerics($x) {
+    if $x ~~ Map {
+        @tally = |$x.keys.BagHash.values;;
+    } elsif is-positional-of-numeric-pairs($x) {
+        @tally = |$x.map({ $_[1] });
+    } elsif is-positional-of-numerics($x) {
         @tally = |$x;
     } elsif is-positional-of-strings($x) {
         @tally = |$x.BagHash.values;
     } else {
-        die "The first argument is expected to be a Positional with Numeric objects or Positional with Str objects.";
+        die "The first argument is expected to be a Positional with Numeric objects, Positional with Str objects, a Map, or Positional of Positionals.";
     }
 
     my %args2 = |%args.grep({ $_.key ne 'normalize' }).Hash;
