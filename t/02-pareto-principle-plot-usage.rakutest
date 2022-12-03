@@ -6,7 +6,7 @@ use lib './lib';
 
 use Text::Plot;
 
-plan 3;
+plan 5;
 
 ## 1
 isa-ok text-pareto-principle-plot((^300).roll(30).List, width => 100, height => 30), Str, 'numeric vector call';
@@ -21,5 +21,16 @@ my $tpres31 = text-pareto-principle-plot(@vec3.BagHash.values.Array, title => 'R
 my $tpres32 = text-pareto-principle-plot(@vec3, title => 'Random strings', width => 80):normalize;
 
 is $tpres31, $tpres32, 'equivalence of string and tally calls';
+
+## 4
+my %hash4 = ('a'..'z').pick(200) Z=> (^100).pick(200);
+
+isa-ok text-pareto-principle-plot(%hash4), Str, 'hash argument';
+
+## 5
+my @arr5 = (^1000).pick(200) Z (^100).pick(200);
+
+isa-ok text-pareto-principle-plot(@arr5), Str, 'array of numeric pairs argument';
+
 
 done-testing;
