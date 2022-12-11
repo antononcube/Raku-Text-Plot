@@ -479,3 +479,29 @@ multi text-pareto-principle-plot($x, *%args) {
     # Result
     return $basePlot;
 }
+
+#===========================================================
+#| Make an HTML image ('<img ...>') spec from a Base64 string.
+#| C<$b> : A Base64 string.
+#| C<:$width> : Width of the image.
+#| C<:$height> : Width of the image.
+#| Returns a string.
+proto from-base64(Str $from, $to = Whatever, :$width = Whatever, :$height = Whatever, |) is export {*}
+
+multi from-base64(Str $b,
+                  $to where $to.isa(Whatever) || $to ~~ Str && $to eq 'html' = Whatever,
+                  :$width = Whatever,
+                  :$height = Whatever,
+                  :$alt = Whatever,
+                  :$kind is copy = Whatever
+        --> Str) is export {
+
+    my $prefix = '<img';
+    if $width ~~ Int { $prefix ~= ' width="' ~ $width.Str ~ '"';}
+    if $height ~~ Int { $prefix ~= ' height="' ~ $height.Str ~ '"';}
+    if $alt ~~ Str { $prefix ~= ' alt="' ~ $alt ~ '"';}
+    if $kind.isa(Whatever) || $kind !~~ Str { $kind = 'png'; }
+
+    my $imgStr = $prefix ~ ' src="data:image/' ~ $kind ~ ';base64,$IMGB64">';
+    return $imgStr.subst('$IMGB64',$b);
+}
