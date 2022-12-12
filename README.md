@@ -1,5 +1,7 @@
 # Raku Text::Plot
 
+[![SparkyCI](http://ci.sparrowhub.io/project/gh-antononcube-Raku-Text-Plot/badge)](http://ci.sparrowhub.io)
+
 This repository has a Raku package for textual (terminal) plots.
 
 Here is the list of functions:
