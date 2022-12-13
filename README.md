@@ -9,7 +9,7 @@ Here is the list of functions:
 - [X] `text-list-plot`
 - [ ] `text-plot`
 - [ ] `text-bar-chart`
-- [ ] `text-pareto-principle-plot`
+- [X] `text-pareto-principle-plot`
 
 ***Currently only `text-list-plot` is implemented.***
 
