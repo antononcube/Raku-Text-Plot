@@ -1,0 +1,11 @@
+use v6.d;
+use Test;
+use Text::Plot;
+
+plan *;
+
+is from-base64(
+        '![](data:image/png;base64,DFGDHFD)'),
+        '<img src="data:image/png;base64,DFGDHFD">';
+
+done-testing;
