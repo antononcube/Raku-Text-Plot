@@ -11,7 +11,7 @@ Here is the list of functions:
 - [ ] `text-bar-chart`
 - [X] `text-pareto-principle-plot`
 
-***Currently only `text-list-plot` is implemented.***
+***Currently only `text-list-plot` and `text-pareto-principle-plot` are implemented.***
 
 It would be nice to also have the functions:
 
