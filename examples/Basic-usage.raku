@@ -24,13 +24,19 @@ my @xs2 = (0, 0.4 ... 5).List;
 say text-list-plot(@xs2, -1 <<*>> @xs2>>.sqrt, xLimit => (-1, 10), yLimit => (2, -5));
 
 ## More complicate data example
-say '-' x 120;
+say "\n", '=' x 120, "\n";
 
 my @dsRand = random-tabular-dataset(70, <x y>,
         generators => [{ random-variate(NormalDistribution.new(4, 2), $_) },
                        { random-variate(NormalDistribution.new(12, 3), $_) }]);
-say records-summary(@dsRand);
 
-say text-list-plot(@dsRand.map({ $_<x> }).List, @dsRand.map({ $_<y> }).List,
-        xLimit => (-2, 10), yLimit => (0, 25),
-        title => 'Random Normal distribution variates')
+records-summary(@dsRand);
+
+say text-list-plot(@dsRand.map({ $_<x y> })>>.List,
+        x-limit => (-2, 10), y-limit => (0, 25),
+        title => 'Random Normal distribution variates',
+        y-tick-labels-format => '%9.1e');
+
+say '=' xx 120;
+
+say text-list-plot( random-real(10, (30, 2)).List );
