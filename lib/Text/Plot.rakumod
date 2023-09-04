@@ -187,6 +187,10 @@ multi text-plot-overlay($tplot1, $tplot2) {
 #| * C<:$y-tick-labels-format> - Y-axis tick labels format.
 proto text-list-plot($x, |) is export {*}
 
+multi text-list-plot(Seq $x, *%args) {
+    return text-list-plot($x.List, |%args)
+}
+
 multi text-list-plot($x, *%args) {
     if is-positional-of-numeric-pairs($x) {
 
@@ -275,6 +279,9 @@ multi text-list-plot($x is copy,
 
     # Removing NaN's and Inf's
     # TBD...
+
+    if $x ~~ Seq { $x = $x.List; }
+    if $y ~~ Seq { $y = $y.List; }
 
     my @xrange;
     given $x-limit {
@@ -413,6 +420,15 @@ multi text-list-plot($x is copy,
             @labelLine[$width / 2 - $title.chars / 2 + $i] = $title.comb[$i]
         }
         @res.unshift($(@labelLine));
+    }
+
+    #------------------------------------------------------
+    # Remove occasional missing "pixels."
+    # This should not be happening!
+    # It seems to be because of rescaling -- debug with
+    #   say text-list-plot(((^10) Z (^10)), width=>43);
+    @res = do for @res -> @row {
+        @row.map({ $_ // ' '})
     }
 
     #------------------------------------------------------
