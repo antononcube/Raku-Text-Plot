@@ -6,7 +6,7 @@ use lib './lib';
 
 use Text::Plot;
 
-plan 6;
+plan 8;
 
 ## 1
 isa-ok text-list-plot((^30).List>>.sqrt, width => 100, height => 30), Str, 'no y-values';
@@ -46,5 +46,10 @@ isa-ok
         Str,
         'x- and y-values with point character, x- and y-label alias specs';
 
+## 7
+isa-ok (((^10) Z (^10)) ==> text-list-plot), Str;
+
+## 8
+isa-ok (((^10) Z (^10)) ==> text-list-plot(width=>50)), Str;
 
 done-testing;
