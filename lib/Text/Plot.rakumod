@@ -225,6 +225,7 @@ multi text-list-plot($x, *%args) {
             $xRange[0] = min($xRange[0], $r[0]);
             $xRange[1] = max($xRange[1], $r[1]);
         }
+        $xRange = %args<x-limit> // $xRange;
 
         my $yRange = [Inf, -Inf];
         for $x.Array -> $x {
@@ -232,6 +233,7 @@ multi text-list-plot($x, *%args) {
             $yRange[0] = min($yRange[0], $r[0]);
             $yRange[1] = max($yRange[1], $r[1]);
         }
+        $yRange = %args<y-limit> // $yRange;
 
         my @tplots = ($x.Array Z @pchars).map({ text-list-plot($_[0], |%args, point-char => $_[1], x-limit => $xRange, y-limit => $yRange) });
         my $res = @tplots[0];
