@@ -6,17 +6,17 @@ This repository has a Raku package for textual (terminal) plots.
 
 Here is the list of functions:
 
-- [X] `text-list-plot`
-- [ ] `text-plot`
-- [ ] `text-bar-chart`
-- [X] `text-pareto-principle-plot`
+- [X] DONE DONE `text-list-plot`
+- [X] DONE DONE `text-pareto-principle-plot`
+- [X] DONE DONE `text-histogram`
+- [ ] TODO TODO `text-plot`
+- [ ] TODO TODO `text-bar-chart`
 
-***Currently only `text-list-plot` and `text-pareto-principle-plot` are implemented.***
+***Currently only `text-list-plot`, `text-pareto-principle-plot`, `text-histogram` are implemented.***
 
-It would be nice to also have the functions:
+It would be nice to also have the function:
 
-- [ ] `text-density-plot`
-- [ ] `text-box-plot`
+- [ ] TODO `text-box-plot`
 
 But that would require dependency on a certain statistical package.
 (I think it is best to keep this package simple.)
@@ -129,6 +129,32 @@ Here is an example with a vector of strings:
 text-pareto-principle-plot( random-pet-name(500), title => 'Random pet names')
 ```
 
+### `text-histogram`
+
+Here is a vector with normal distribution numbers:
+
+```perl6
+my ($μ, $σ) = (5, 2);
+my @data = (^500).map({ $μ + $σ * (2 * pi * (1 - rand)).cos * (- 2 * log rand).sqrt });
+
+@data.elems
+```
+
+Here is a histogram with counts:
+
+```perl6
+text-histogram(@data, 30, type => 'count', :filled, point-char => <* *>);
+```
+
+Here is a histogram with density function estimate:
+
+```perl6
+text-histogram(@data, 30, type => 'cdf', height => 20, :filled, point-char => <* ⏺>);
+```
+
+**Remark:** The second argument is for the number of histogram bins.
+The value of the option `:$type` is expected to be one of "count", "probability", "PDF", or "CDF".
+
 -------
 
 ## Command Line Interface (CLI)
@@ -141,19 +167,19 @@ text-list-plot --help
 
 Here is an example of a simple, y-axis values only call:
 
-```shell
+```
 text-list-plot 33 12 21 10 3 4 
 ```
 
 Here is an example of 2D points call:
 
-```shell
+```
 text-list-plot "22,32 10,39 13,32 14,20"
 ```
 
 Here is an example pipeline:
 
-```shell
+```
 raku -e 'say (^1000).roll(21)' | text-list-plot
 ```
 
@@ -183,40 +209,39 @@ the width and height. (The other example do succeed.)
 
 ## TODO
 
-- [X] Plotting a list of two-element lists.
+- [X] DONE Plotting a list of two-element lists.
 
-- [X] Optional tick labels format specs.
+- [X] DONE Optional tick labels format specs.
 
-- [X] CLI design and implementation.
+- [X] DONE CLI design and implementation.
 
-- [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
+- [X] DONE Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
-- [X] Multi-list plot support.
+- [X] DONE Multi-list plot support.
 
-- [X] Plot title.
+- [X] DONE Plot title.
 
-- [ ] Proper respect of width and height.
+- [X] DONE `text-pareto-principle-plot`
+
+- [X] DONE `text-histogram`
+
+- [ ] TODO Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
 
-- [ ] Make the axes ticks to be on the left.
+- [ ] TODO Make the axes ticks to be on the left.
 
     - It was just much easier to put them on the right.
 
     - BTW, this is probably a bug -- the width of the "total plot" is larger than the specified.
 
-- [ ] Optional placement of tick values.
+- [ ] TODO Optional placement of tick values.
 
-- [ ] `text-pareto-principle-plot`
-
-- [ ] `text-plot`
+- [ ] TODO `text-plot`
 
     - Easy to implement inlined with `text-plot`, but it might give a simpler interface.
 
-- [ ] `text-bar-chart`
-
-- [ ] `text-histogram`
-
+- [ ] TODO `text-bar-chart`
 
 -------
 

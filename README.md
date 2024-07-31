@@ -6,17 +6,17 @@ This repository has a Raku package for textual (terminal) plots.
 
 Here is the list of functions:
 
-- [X] `text-list-plot`
-- [ ] `text-plot`
-- [ ] `text-bar-chart`
-- [X] `text-pareto-principle-plot`
+- [X] DONE DONE `text-list-plot`
+- [X] DONE DONE `text-pareto-principle-plot`
+- [X] DONE DONE `text-histogram`
+- [ ] TODO TODO `text-plot`
+- [ ] TODO TODO `text-bar-chart`
 
-***Currently only `text-list-plot` and `text-pareto-principle-plot` are implemented.***
+***Currently only `text-list-plot`, `text-pareto-principle-plot`, `text-histogram` are implemented.***
 
-It would be nice to also have the functions:
+It would be nice to also have the function:
 
-- [ ] `text-density-plot`
-- [ ] `text-box-plot`
+- [ ] TODO `text-box-plot`
 
 But that would require dependency on a certain statistical package.
 (I think it is best to keep this package simple.)
@@ -166,16 +166,16 @@ my @dsRand = random-tabular-dataset(70, <x y>,
 records-summary(@dsRand);
 ```
 ```
-# +-------------------------------+------------------------------+
-# | x                             | y                            |
-# +-------------------------------+------------------------------+
-# | Min    => -1.9315282286837414 | Min    => 5.408529291403756  |
-# | 1st-Qu => 2.8232810235358086  | 1st-Qu => 9.806219961394248  |
-# | Mean   => 3.9671188479758186  | Mean   => 11.742380660644757 |
-# | Median => 4.173600521820246   | Median => 11.586859774445358 |
-# | 3rd-Qu => 5.443198351747228   | 3rd-Qu => 13.815276322178805 |
-# | Max    => 7.506965375963047   | Max    => 19.501133858154923 |
-# +-------------------------------+------------------------------+
+# +------------------------------+-------------------------------+
+# | y                            | x                             |
+# +------------------------------+-------------------------------+
+# | Min    => 6.728751608514747  | Min    => -0.6342550664377802 |
+# | 1st-Qu => 10.115185606162802 | 1st-Qu => 2.127501347786245   |
+# | Mean   => 11.977061937904317 | Mean   => 3.701060338012048   |
+# | Median => 11.884934801827065 | Median => 3.8810775440571463  |
+# | 3rd-Qu => 14.052282754607848 | 3rd-Qu => 5.0641235729310745  |
+# | Max    => 17.825472186365246 | Max    => 8.115595725328749   |
+# +------------------------------+-------------------------------+
 ```
 
 ```perl6
@@ -189,13 +189,13 @@ text-list-plot(@dsRand.map({ $_<x y> })>>.List,
 # +                                                          +  25.00
 # |                                                          |       
 # +                                                          +  20.00
-# |                                   *  **                  |       
-# |                   *     *    *  *                        |       
-# +  *        *      * *  **  **** * *        *              +  15.00
-# |        *                 *  *  *** *  *  ***             |       
-# +*             * **    *  ***  ** *       *  **            +  10.00
-# |     *          *        **    *   **                     |       
-# |             *       *    *                  *            |       
+# |                            *                             |       
+# |             **                **    *  *                 |       
+# +         *        * *    * * ***  *  *                    +  15.00
+# |          *   ***   *   *  ** ****  ****      * *         |       
+# +           *  **   *   * * **** * *  *       *            +  10.00
+# |             *       *    *  *     *   **                 |       
+# |      *                    *                              |       
 # +                                                          +   5.00
 # |                                                          |       
 # +                                                          +   0.00
@@ -251,12 +251,12 @@ text-pareto-principle-plot( random-real(10, 300), title => 'Random reals')
 #     0.00    0.17     0.33     0.50    0.67     0.83    1.00 
 # +---+-------+--------+--------+-------+--------+-------+---+      
 # |                                                          |      
-# +                                       ****************   +  1.00
-# |                                 *******                  |      
+# +                                        ***************   +  1.00
+# |                                 ********                 |      
 # +                            *****                         +  0.80
 # |                        ****                              |      
-# +                    *****                                 +  0.60
-# |                 ****                                     |      
+# +                    ****                                  +  0.60
+# |                *****                                     |      
 # +             ****                                         +  0.40
 # |          ****                                            |      
 # +        ***                                               +  0.20
@@ -274,24 +274,94 @@ text-pareto-principle-plot( random-pet-name(500), title => 'Random pet names')
 ```
 ```
 # Random pet names                      
-#     0.00        0.24         0.48        0.73         0.97  
-# +---+-----------+------------+-----------+------------+----+      
+#     0.00        0.24        0.47        0.71        0.94    
+# +---+-----------+-----------+-----------+-----------+------+      
 # |                                                          |      
 # +                                                 ******   +  1.00
-# |                                           *******        |      
-# +                                      ******              +  0.80
-# |                                *******                   |      
-# +                          *******                         +  0.60
-# |                     ******                               |      
-# +               ******                                     +  0.40
-# |         *******                                          |      
-# +      ****                                                +  0.20
-# |    ***                                                   |      
+# |                                            ******        |      
+# +                                      *******             +  0.80
+# |                                 ******                   |      
+# +                           ******                         +  0.60
+# |                     *******                              |      
+# +                ******                                    +  0.40
+# |          *******                                         |      
+# +       ****                                               +  0.20
+# |    ****                                                  |      
 # |   **                                                     |      
 # +                                                          +  0.00
-# +---+-----------+------------+-----------+------------+----+      
-#     0.00        100.00       200.00      300.00       400.00
+# +---+-----------+-----------+-----------+-----------+------+      
+#     0.00        100.00      200.00      300.00      400.00
 ```
+
+### `text-histogram`
+
+Here is a vector with normal distribution numbers:
+
+```perl6
+my ($μ, $σ) = (5, 2);
+my @data = (^500).map({ $μ + $σ * (2 * pi * (1 - rand)).cos * (- 2 * log rand).sqrt });
+
+@data.elems
+```
+```
+# 500
+```
+
+Here is a histogram with counts:
+
+```perl6
+text-histogram(@data, 30, type => 'count', :filled, point-char => <* *>);
+```
+```
+# +-------------+-----------------+-----------------+--------+       
+# |                                                          |       
+# +                              *                           +  50.00
+# |                              *   *                       |       
+# +                         * *  * * *                       +  40.00
+# |                         * ** * * **                      |       
+# +                         * ** * * ** *                    +  30.00
+# |                    *    * ** * * ** *                    |       
+# +                    * ** * ** * * ** * *                  +  20.00
+# |                    * ** * ** * * ** * *                  |       
+# +               *  * * ** * ** * * ** * ** *               +  10.00
+# |               ** * * ** * ** * * ** * ** * * *           |       
+# +   *     * * * ** * * ** * ** * * ** * ** * * *       *   +   0.00
+# |                                                          |       
+# +-------------+-----------------+-----------------+--------+       
+#               0.00              5.00              10.00
+```
+
+Here is a histogram with density function estimate:
+
+```perl6
+text-histogram(@data, 30, type => 'cdf', height => 20, :filled, point-char => <* ⏺>);
+```
+```
+# +-------------+-----------------+-----------------+--------+      
+# |                                                          |      
+# +                                          ⏺ ⏺ ⏺       ⏺   +  1.00
+# |                                       ⏺⏺ * * *       *   |      
+# |                                     ⏺ ** * * *       *   |      
+# +                                   ⏺ * ** * * *       *   +  0.80
+# |                                  ⏺* * ** * * *       *   |      
+# |                                ⏺ ** * ** * * *       *   |      
+# +                                * ** * ** * * *       *   +  0.60
+# |                              ⏺ * ** * ** * * *       *   |      
+# |                            ⏺ * * ** * ** * * *       *   |      
+# +                           ⏺* * * ** * ** * * *       *   +  0.40
+# |                           ** * * ** * ** * * *       *   |      
+# |                         ⏺ ** * * ** * ** * * *       *   |      
+# +                       ⏺ * ** * * ** * ** * * *       *   +  0.20
+# |                    ⏺ ⏺* * ** * * ** * ** * * *       *   |      
+# |                ⏺ ⏺ * ** * ** * * ** * ** * * *       *   |      
+# +   ⏺     ⏺ ⏺ ⏺ ⏺* * * ** * ** * * ** * ** * * *       *   +  0.00
+# |                                                          |      
+# +-------------+-----------------+-----------------+--------+      
+#               0.00              5.00              10.00
+```
+
+**Remark:** The second argument is for the number of histogram bins.
+The value of the option `:$type` is expected to be one of "count", "probability", "PDF", or "CDF".
 
 -------
 
@@ -322,100 +392,20 @@ text-list-plot --help
 
 Here is an example of a simple, y-axis values only call:
 
-```shell
+```
 text-list-plot 33 12 21 10 3 4 
-```
-```
-# +-----+------------------+-------------------+------------------+------------------+-------------------+-----+         
-# +                                                                                                            +  35.00  
-# |     *                                                                                                      |         
-# |                                                                                                            |         
-# +                                                                                                            +  30.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                                                                                            +  25.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                            *                                                               |         
-# +                                                                                                            +  20.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                                                                                            +  15.00  
-# |                                                                                                            |         
-# |                        *                                                                                   |         
-# |                                                                                                            |         
-# +                                                               *                                            +  10.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                                                                                            +   5.00  
-# |                                                                                                      *     |         
-# |                                                                                  *                         |         
-# |                                                                                                            |         
-# +-----+------------------+-------------------+------------------+------------------+-------------------+-----+         
-#       0.00               1.00                2.00               3.00               4.00                5.00
 ```
 
 Here is an example of 2D points call:
 
-```shell
+```
 text-list-plot "22,32 10,39 13,32 14,20"
-```
-```
-# +-----+---------------+---------------+---------------+----------------+---------------+---------------+-----+         
-# +                                                                                                            +  40.00  
-# |     *                                                                                                      |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                                                                                            +  35.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                             *                                                                        *     |         
-# |                                                                                                            |         
-# +                                                                                                            +  30.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                                                                                            +  25.00  
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# |                                                                                                            |         
-# +                                     *                                                                      +  20.00  
-# |                                                                                                            |         
-# +-----+---------------+---------------+---------------+----------------+---------------+---------------+-----+         
-#       10.00           12.00           14.00           16.00            18.00           20.00           22.00
 ```
 
 Here is an example pipeline:
 
-```shell
+```
 raku -e 'say (^1000).roll(21)' | text-list-plot
-```
-```
-# +---+----------+-----------+-----------+-----------+-------+          
-# |                                                          |          
-# +                                               *          +  800.00  
-# |                     *           *    *                   |          
-# |                               *                          |          
-# +                                                          +  600.00  
-# |                 *      *                                 |          
-# +          *                        *    *         *       +  400.00  
-# |     * *      *    *      *                * *      *     |          
-# |                            *                             |          
-# +            *                                             +  200.00  
-# |                                                          |          
-# +   *                                                  *   +    0.00  
-# |                                                          |          
-# +---+----------+-----------+-----------+-----------+-------+          
-#     0.00       5.00        10.00       15.00       20.00
 ```
 
 **Remark:** Attempt is made plot's width and height are determined automatically, using terminal's number of columns and
@@ -444,40 +434,39 @@ the width and height. (The other example do succeed.)
 
 ## TODO
 
-- [X] Plotting a list of two-element lists.
+- [X] DONE Plotting a list of two-element lists.
 
-- [X] Optional tick labels format specs.
+- [X] DONE Optional tick labels format specs.
 
-- [X] CLI design and implementation.
+- [X] DONE CLI design and implementation.
 
-- [X] Make use kebab-case for named arguments and make corresponding camel-case aliases.
+- [X] DONE Make use kebab-case for named arguments and make corresponding camel-case aliases.
 
-- [X] Multi-list plot support.
+- [X] DONE Multi-list plot support.
 
-- [X] Plot title.
+- [X] DONE Plot title.
 
-- [ ] Proper respect of width and height.
+- [X] DONE `text-pareto-principle-plot`
+
+- [X] DONE `text-histogram`
+
+- [ ] TODO Proper respect of width and height.
 
     - Currently, the width and height are for the plot frame -- title, axes- and tick labels are "extra."
 
-- [ ] Make the axes ticks to be on the left.
+- [ ] TODO Make the axes ticks to be on the left.
 
     - It was just much easier to put them on the right.
 
     - BTW, this is probably a bug -- the width of the "total plot" is larger than the specified.
 
-- [ ] Optional placement of tick values.
+- [ ] TODO Optional placement of tick values.
 
-- [ ] `text-pareto-principle-plot`
-
-- [ ] `text-plot`
+- [ ] TODO `text-plot`
 
     - Easy to implement inlined with `text-plot`, but it might give a simpler interface.
 
-- [ ] `text-bar-chart`
-
-- [ ] `text-histogram`
-
+- [ ] TODO `text-bar-chart`
 
 -------
 
