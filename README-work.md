@@ -6,11 +6,11 @@ This repository has a Raku package for textual (terminal) plots.
 
 Here is the list of functions:
 
-- [X] DONE DONE `text-list-plot`
-- [X] DONE DONE `text-pareto-principle-plot`
-- [X] DONE DONE `text-histogram`
-- [ ] TODO TODO `text-plot`
-- [ ] TODO TODO `text-bar-chart`
+- [X] DONE `text-list-plot`
+- [X] DONE `text-pareto-principle-plot`
+- [X] DONE `text-histogram`
+- [ ] TODO `text-plot`
+- [ ] TODO `text-bar-chart`
 
 ***Currently only `text-list-plot`, `text-pareto-principle-plot`, `text-histogram` are implemented.***
 
@@ -149,7 +149,7 @@ text-histogram(@data, 30, type => 'count', :filled, point-char => <* *>);
 Here is a histogram with density function estimate:
 
 ```perl6
-text-histogram(@data, 30, type => 'cdf', height => 20, :filled, point-char => <* ⏺>);
+text-histogram(@data, 30, type => 'cdf', height => 20, :filled);
 ```
 
 **Remark:** The second argument is for the number of histogram bins.
