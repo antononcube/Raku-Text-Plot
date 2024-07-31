@@ -499,6 +499,86 @@ multi text-pareto-principle-plot($x, *%args) {
 }
 
 #===========================================================
+sub estimate-pdf(@data, $bins = 10, Str:D :$type = 'prob') {
+    my $min = @data.min;
+    my $max = @data.max;
+    my $bin-width = ($max - $min) / $bins;
+    my %histogram;
+
+    for @data -> $value {
+        my $bin = Int(($value - $min) / $bin-width);
+        %histogram{$bin}++;
+    }
+
+    my %pdf;
+    if $type.lc ∈ <count counts> {
+        %pdf = %histogram
+    } elsif $type.lc ∈ <probability probabilities prob probs> {
+        for %histogram.kv -> $bin, $count {
+            %pdf{$bin} = $count / @data.elems;
+        }
+    } elsif $type.lc ∈ <pdf cdf> {
+        for %histogram.kv -> $bin, $count {
+            %pdf{$bin} = $count / @data.elems / $bin-width;
+        }
+        if $type.lc eq 'cdf' {
+            my @pairs = %histogram.kv.rotor(2).sort(*.head.Int);
+            my @acc = [\+] @pairs.map(*.tail);
+            %pdf = @pairs.map(*.head) Z=> (@acc >>/>> @acc.tail );
+        }
+    } else {
+        die "Unknown histogram type."
+    }
+
+    return %(:%pdf, :$min, :$max, :$bin-width, :$bins);
+}
+
+#===========================================================
+#| Make a string that represents a histogram for the given arguments.
+#| Takes all optional arguments as C<&text-list-plot>.
+#| * C<@data> - Data vector of numbers.
+#| * C<:$type> - Type of the histogram one of "count", "probability", "PDF", or "CDF".
+#| * C<:$bins> - Number of bins.
+#| * C<:$point-char> - Plot points character.
+#| * C<:$width> - Width of the plot.
+#| * C<:$height> - Height of the plot.
+#| * C<:$title> - Title of the plot.
+#| * C<:$x-label> - Label of the X-axis. If Whatever, then no label is placed.
+#| * C<:$y-label> - Label of the Y-axis. If Whatever, then no label is placed.
+#| * C<:$x-limit> - Limits for the X-axis.
+#| * C<:$y-limit> - Limits for the Y-axis.
+#| * C<:$x-tick-labels-format> - X-axis tick labels format.
+#| * C<:$y-tick-labels-format> - Y-axis tick labels format.
+proto sub text-histogram(@data,
+                         UInt:D $bins = 20,
+                         Str:D :$type = 'counts',
+                         Bool:D :$filled = True,
+                         *%args) is export {*}
+
+multi sub text-histogram(@data,
+                         UInt:D $bins = 20,
+                         Str:D :$type = 'counts',
+                         Bool:D :$filled = True,
+                         *%args ) {
+
+    my %res = estimate-pdf(@data, $bins, :$type);
+
+    my @points = %res<pdf>.sort({ $_.key.Int }).map({ [$_.key * %res<bin-width> + %res<min>, $_.value] });
+
+    return do if $filled {
+        my $width = %args<width> // 60;
+        my $height = %args<height> // Whatever;
+        if $height.isa(Whatever) {
+            $height = floor(0.25 * $width);
+        }
+        my @fill = %res<pdf>.sort({ $_.key.Int }).map(-> $p { (0, $p.value / $height ... $p.value).map({ [$p.key * %res<bin-width> + %res<min>, $_] }) }).map(*.Slip);
+        text-list-plot([@fill, @points], |%args)
+    } else {
+        text-list-plot(@points, |%args)
+    }
+}
+
+#===========================================================
 #| Make an HTML image ('<img ...>') spec from a Base64 string.
 #| C<$b> : A Base64 string.
 #| C<:$width> : Width of the image.
