@@ -154,6 +154,12 @@ sub make-tick-text-line(@xticks is copy, @xrange, UInt $width, Str $x-tick-label
 }
 
 #===========================================================
+# Split on commas, trim whitespace
+sub split-csv(Str:D $s, Str:D :$sep = ',') {
+    return $s.split($sep, :skip-empty)».trim.Array
+}
+
+#===========================================================
 #| Overlay text plots
 proto text-plot-overlay(|) is export {*}
 
@@ -258,19 +264,45 @@ multi text-list-plot($x is copy,
                      :xTickLabelsFormat(:$x-tick-labels-format) is copy = Whatever,
                      :yTickLabelsFormat(:$y-tick-labels-format) is copy = Whatever) {
 
+    # If $x is a string, treat as tick labels and use 1..n as x-coordinates
+    if $x ~~ Str:D {
+        my @labels = split-csv($x);
+        #@x-tick-labels = @labels if @x-tick-labels.isa(Whatever) || !@x-tick-labels;
+        my @x2 = @labels.map({ try $_.Num  }).List;
+        if @x2.all !~~ Numeric:D {
+            $x = (1 .. @labels.elems).Array;   # integer x-coordinates
+        } else {
+            $x = |@x2
+        }
+    }
+
+    # If $y is a string, split and coerce to numerics
+    if $y ~~ Str:D {
+        my @nums = do for split-csv($y) -> $v {
+            my $n = try +$v;  # numeric coercion
+            die "Non-numeric y-value: '$v'" unless $n.defined && $n ~~ Numeric:D;
+            $n
+        };
+        $y = @nums.Array;
+    }
+
+    # Complain for unexpected $x
     if !is-positional-of-numerics($x) {
         die "The first argument is expected to be a Positional with Numeric objects" ~
                 " or a Positional with two-element Positional's of Numeric objects."
     }
 
+    # Complain for unexpected $y
     if !is-positional-of-numerics($y) {
         die "The second argument is expected to be a Positional with Numeric objects."
     }
 
+    # Complain over different sizes
     if $y.elems != $x.elems {
         die "If both first and second arguments are given, then they are expected to be the positionals with same number of elements."
     }
 
+    # Process width and height
     if !($width ~~ Numeric:D || $height ~~ Numeric:D) {
         die "At least one of the arguments width and height has to be numeric."
     } elsif $height.isa(Whatever) {
