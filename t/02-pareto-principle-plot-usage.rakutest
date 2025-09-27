@@ -1,9 +1,6 @@
 use v6.d;
 use Test;
 
-use lib '.';
-use lib './lib';
-
 use Text::Plot;
 
 plan 5;
