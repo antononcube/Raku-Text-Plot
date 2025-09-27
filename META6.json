@@ -21,6 +21,7 @@
     "terminal",
     "plot",
     "list plot",
+    "histogram",
     "chart"
   ],
   "api": "1",
