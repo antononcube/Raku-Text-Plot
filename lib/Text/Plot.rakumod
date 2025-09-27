@@ -187,7 +187,7 @@ multi text-plot-overlay($tplot1, $tplot2) {
 #| * C<:$y-tick-labels-format> - Y-axis tick labels format.
 proto text-list-plot($x, |) is export {*}
 
-multi text-list-plot(Seq $x, *%args) {
+multi text-list-plot(Seq:D $x, *%args) {
     return text-list-plot($x.List, |%args)
 }
 
@@ -196,7 +196,7 @@ multi text-list-plot($x, *%args) {
 
         return text-list-plot($x.map(*[0]).List, $x.map(*[1]).List, |%args);
 
-    } elsif $x ~~ Positional && ([&&] $x.map({ is-positional-of-numeric-pairs($_) })) {
+    } elsif $x ~~ (Array:D | List:D | Seq:D) && ([&&] $x.map({ is-positional-of-numeric-pairs($_) })) {
 
         my $pcharSpec = %args<point-char>:exists ?? %args<point-char> !! Whatever;
 
@@ -271,7 +271,7 @@ multi text-list-plot($x is copy,
         die "If both first and second arguments are given, then they are expected to be the positionals with same number of elements."
     }
 
-    if !($width ~~ Numeric || $height ~~ Numeric) {
+    if !($width ~~ Numeric:D || $height ~~ Numeric:D) {
         die "At least one of the arguments width and height has to be numeric."
     } elsif $height.isa(Whatever) {
         $height = 0.25 * $width
@@ -288,8 +288,8 @@ multi text-list-plot($x is copy,
     my @xrange;
     given $x-limit {
         when $_.isa(Whatever) { @xrange = get-range($x) }
-        when $_ ~~ Numeric { @xrange = (0, $x-limit).sort.List; }
-        when $_ ~~ Positional && $_.elems == 2 { @xrange = [|$_.sort] }
+        when $_ ~~ Numeric:D { @xrange = (0, $x-limit).sort.List; }
+        when $_ ~~ Positional:D && $_.elems == 2 { @xrange = [|$_.sort] }
         default {
             die 'The value of the x-limit is expected a number, a list of two numbers, or Whatever.';
         }
@@ -298,8 +298,8 @@ multi text-list-plot($x is copy,
     my @yrange;
     given $y-limit {
         when $_.isa(Whatever) { @yrange = get-range($y) }
-        when $_ ~~ Numeric { @yrange = (0, $y-limit).sort.List; }
-        when $_ ~~ Positional && $_.elems == 2 { @yrange = [|$_.sort] }
+        when $_ ~~ Numeric:D { @yrange = (0, $y-limit).sort.List; }
+        when $_ ~~ Positional:D && $_.elems == 2 { @yrange = [|$_.sort] }
         default {
             die 'The value of the y-limit is expected a number, a list of two numbers, or Whatever.';
         }
@@ -343,7 +343,7 @@ multi text-list-plot($x is copy,
     if $x-tick-labels-format.isa(Whatever) {
         my $b = ceiling(log10(max(@xticks>>.abs)));
         $x-tick-labels-format = "%{ $b + 5 }.2f"
-    } elsif !$x-tick-labels-format ~~ Str {
+    } elsif !$x-tick-labels-format ~~ Str:D {
         die "The value of the argument x-tick-labels-format is expected to be a string or Whatever."
     }
 
@@ -361,7 +361,7 @@ multi text-list-plot($x is copy,
     if $y-tick-labels-format.isa(Whatever) {
         my $b = ceiling(log10(max(@yticks>>.abs)));
         $y-tick-labels-format = "%{$b+5}.2f"
-    } elsif ! $y-tick-labels-format ~~ Str {
+    } elsif ! $y-tick-labels-format ~~ Str:D {
         die "The value of the argument y-tick-labels-format is expected to be a string or Whatever."
     }
 
@@ -394,7 +394,7 @@ multi text-list-plot($x is copy,
     # Place labels
     #------------------------------------------------------
 
-    if $x-label ~~ Str {
+    if $x-label ~~ Str:D {
         my @labelLine = ' ' xx $width;
         for ^$x-label.chars -> $i {
             @labelLine[$width / 2 - $x-label.chars / 2 + $i] = $x-label.comb[$i]
@@ -402,7 +402,7 @@ multi text-list-plot($x is copy,
         @res.append($(@labelLine));
     }
 
-    if $y-label ~~ Str {
+    if $y-label ~~ Str:D {
         my @labelLine = ' ' xx $height;
         for ^$y-label.chars -> $i {
             @labelLine[$height / 2 - $y-label.chars / 2 + $i] = $y-label.comb[$i]
@@ -416,7 +416,7 @@ multi text-list-plot($x is copy,
     # Place title
     #------------------------------------------------------
 
-    if $title ~~ Str {
+    if $title ~~ Str:D {
         my @labelLine = ' ' xx $width;
         for ^($title.Str.chars) -> $i {
             @labelLine[$width / 2 - $title.chars / 2 + $i] = $title.comb[$i]
@@ -457,7 +457,7 @@ proto text-pareto-principle-plot($x, *%args) is export {*}
 multi text-pareto-principle-plot($x, *%args) {
 
     my @tally;
-    if $x ~~ Map {
+    if $x ~~ Map:D {
         @tally = |$x.keys.BagHash.values;
     } elsif is-positional-of-numeric-pairs($x) {
         @tally = |$x.map({ $_[1] });
@@ -474,7 +474,7 @@ multi text-pareto-principle-plot($x, *%args) {
     # Pareto statistic computations
     @tally = @tally.sort.reverse;
 
-    my Bool $normalize = %args<normalize> // True;
+    my Bool:D $normalize = %args<normalize> // True;
 
     my @cumSum = produce(&[+], @tally);
 
@@ -584,22 +584,22 @@ multi sub text-histogram(@data,
 #| C<:$width> : Width of the image.
 #| C<:$height> : Width of the image.
 #| Returns a string.
-proto from-base64(Str $from, $to = Whatever, :$width = Whatever, :$height = Whatever, |) is export {*}
+proto from-base64(Str:D $from, $to = Whatever, :$width = Whatever, :$height = Whatever, |) is export {*}
 
-multi from-base64(Str $b is copy,
-                  $to where $to.isa(Whatever) || $to ~~ Str && $to eq 'html' = Whatever,
+multi from-base64(Str:D $b is copy,
+                  $to where $to.isa(Whatever) || $to ~~ Str:D && $to eq 'html' = Whatever,
                   :$width = Whatever,
                   :$height = Whatever,
                   :$alt = Whatever,
                   :$kind is copy = Whatever,
-                  Bool :$strip-md = True
-        --> Str) is export {
+                  Bool:D :$strip-md = True
+        --> Str:D) is export {
 
     my $prefix = '<img';
-    if $width ~~ Int { $prefix ~= ' width="' ~ $width.Str ~ '"';}
-    if $height ~~ Int { $prefix ~= ' height="' ~ $height.Str ~ '"';}
-    if $alt ~~ Str { $prefix ~= ' alt="' ~ $alt ~ '"';}
-    if $kind.isa(Whatever) || $kind !~~ Str { $kind = 'png'; }
+    if $width ~~ Int:D { $prefix ~= ' width="' ~ $width.Str ~ '"';}
+    if $height ~~ Int:D { $prefix ~= ' height="' ~ $height.Str ~ '"';}
+    if $alt ~~ Str:D { $prefix ~= ' alt="' ~ $alt ~ '"';}
+    if $kind.isa(Whatever) || $kind !~~ Str:D { $kind = 'png'; }
 
     if $strip-md && ($b ~~ / ^ '![](data:image/png;base64,' /) {
         $b = $b.subst(/ ^ '![](data:image/png;base64,' /, '').subst( /')' $/, '');
